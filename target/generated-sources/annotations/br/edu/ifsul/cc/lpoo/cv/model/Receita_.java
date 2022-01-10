@@ -1,0 +1,19 @@
+package br.edu.ifsul.cc.lpoo.cv.model;
+
+import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
+import br.edu.ifsul.cc.lpoo.cv.model.Produto;
+import javax.annotation.Generated;
+import javax.persistence.metamodel.ListAttribute;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
+
+@Generated(value="EclipseLink-2.7.7.v20200504-rNA", date="2022-01-09T11:19:03")
+@StaticMetamodel(Receita.class)
+public class Receita_ { 
+
+    public static volatile SingularAttribute<Receita, String> orientacao;
+    public static volatile ListAttribute<Receita, Produto> produtos;
+    public static volatile SingularAttribute<Receita, Integer> id;
+    public static volatile SingularAttribute<Receita, Consulta> consulta;
+
+}
