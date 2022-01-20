@@ -36,7 +36,7 @@ public class Agenda implements Serializable {
     @Enumerated(EnumType.STRING)
     private TipoProduto tipo_produto;
 
-    Agenda() {}
+    public Agenda() {}
 
     public Integer getId() {
         return id;

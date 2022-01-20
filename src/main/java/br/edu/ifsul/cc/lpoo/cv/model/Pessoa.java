@@ -45,7 +45,7 @@ public class Pessoa implements Serializable {
     @Column(nullable = true)
     private String complemento;
 
-    Pessoa() {}
+    public Pessoa() {}
 
     public void setCpf(String cpf) {
         this.cpf = cpf;

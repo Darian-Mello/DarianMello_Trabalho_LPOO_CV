@@ -31,7 +31,7 @@ public class Pet {
     @JoinColumn(name = "raca_id", nullable = false)
     private Raca reca;
 
-    Pet() {}
+    public Pet() {}
 
     public Integer getId() {
         return id;

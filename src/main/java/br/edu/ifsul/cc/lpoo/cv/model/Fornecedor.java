@@ -14,7 +14,7 @@ public class Fornecedor extends Pessoa{
     @Column(nullable = false)
     private String ie;
 
-    Fornecedor() {}
+    public Fornecedor() {}
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;

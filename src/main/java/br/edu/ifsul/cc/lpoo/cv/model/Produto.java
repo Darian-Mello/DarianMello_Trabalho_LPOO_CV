@@ -28,7 +28,7 @@ public class Produto {
     @Enumerated(EnumType.STRING)
     private TipoProduto tipo_produto;
 
-    Produto() {}
+    public Produto() {}
 
     public Integer getId() {
         return id;

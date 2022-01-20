@@ -16,7 +16,7 @@ public class Cliente extends Pessoa {
     @OneToMany(mappedBy = "cliente")
     private List<Pet> pets;
 
-    Cliente() {}
+    public Cliente() {}
 
     public Calendar getData_ultima_visita() {
         return data_ultima_visita;

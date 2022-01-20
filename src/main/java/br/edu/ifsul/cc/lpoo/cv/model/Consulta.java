@@ -39,7 +39,7 @@ public class Consulta implements Serializable {
     @OneToMany(mappedBy = "consulta")
     private List<Receita> receitas;
 
-    Consulta() {}
+    public Consulta() {}
 
     public Integer getId() {
         return id;

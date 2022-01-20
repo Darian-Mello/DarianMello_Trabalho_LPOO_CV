@@ -45,7 +45,7 @@ public class Venda {
             inverseJoinColumns = {@JoinColumn(name = "produto_id")})
     private List<Produto> produtos;
 
-    Venda() {}
+    public Venda() {}
 
     public Integer getId() {
         return id;

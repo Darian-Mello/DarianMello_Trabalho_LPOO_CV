@@ -13,7 +13,7 @@ public class Medico extends Pessoa{
     @Column(nullable = false)
     private String numero_crmv;
 
-    Medico() {}
+    public Medico() {}
 
     public void setNumero_crmv(String numero_crmv) {
         this.numero_crmv = numero_crmv;

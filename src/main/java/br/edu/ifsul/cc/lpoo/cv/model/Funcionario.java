@@ -17,7 +17,7 @@ public class Funcionario extends Pessoa{
     @Enumerated(EnumType.STRING)
     private Cargo cargo;
 
-    Funcionario() {}
+    public Funcionario() {}
 
     public void setNumero_ctps(String numero_ctps) {
         this.numero_ctps = numero_ctps;

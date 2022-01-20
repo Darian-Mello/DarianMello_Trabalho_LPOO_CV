@@ -24,7 +24,7 @@ public class Receita {
             inverseJoinColumns = {@JoinColumn(name = "produto_id")})
     private List<Produto> produtos;
 
-    Receita () {}
+    public Receita () {}
 
     public Integer getId() {
         return id;
