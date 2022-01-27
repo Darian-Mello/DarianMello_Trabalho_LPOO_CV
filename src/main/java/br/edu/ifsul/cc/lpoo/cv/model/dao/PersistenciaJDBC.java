@@ -2,6 +2,8 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao;
 
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
+import br.edu.ifsul.cc.lpoo.cv.model.Pet;
+import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     public void fecharConexao() {
         try {
             this.con.close();
-            System.out.println("Fechou conexao JDBC");
+            System.out.println("\nFechou conexao JDBC\n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -82,7 +84,67 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 return m;
             }
         } else if (c == Consulta.class) {
+            PreparedStatement ps_consulta = this.con.prepareStatement("select id, data, data_retorno, observacao,"
+                    + " valor, medico_id, pet_id from tb_consulta where id = ?;");
 
+            ps_consulta.setInt(1, Integer.parseInt(id.toString()));
+
+            ResultSet rs = ps_consulta.executeQuery();
+
+            if(rs.next()){
+
+                Consulta con = new Consulta();
+                con.setId(rs.getInt("id"));
+
+                Calendar dtCad = Calendar.getInstance();
+                dtCad.setTimeInMillis(rs.getDate("data").getTime());
+                con.setData(dtCad);
+
+                Calendar dtRet = Calendar.getInstance();
+                dtRet.setTimeInMillis(rs.getDate("data_retorno").getTime());
+                con.setData_retorno(dtRet);
+
+                con.setObservacao(rs.getString("observacao"));
+                con.setValor(rs.getFloat("valor"));
+
+                Medico med = new Medico();
+                med.setCpf(rs.getString("medico_id"));
+                con.setMedico(med);
+
+                Pet pet = new Pet();
+                pet.setId(rs.getInt("pet_id"));
+                con.setPet(pet);
+
+                PreparedStatement ps_receita = this.con.prepareStatement("select r.id, r.orientacao from tb_receita r, tb_consulta c where r.consulta_id = c.id and c.id = ?");
+                ps_receita.setInt(1, Integer.parseInt(id.toString()));
+
+                ResultSet rs2 = ps_receita.executeQuery();
+
+                while(rs2.next()){
+
+                    Receita r = new Receita();
+                    r.setId(rs2.getInt("id"));
+                    r.setOrientacao(rs2.getString("orientacao"));
+
+                    con.setReceita(r);
+                }
+            }
+        } else if (c == Receita.class) {
+            PreparedStatement ps_receita = this.con.prepareStatement("select id, orientacao, consulta_id, from tb_receita where id = ?;");
+
+            ps_receita.setInt(1, Integer.parseInt(id.toString()));
+            ResultSet rs = ps_receita.executeQuery();
+
+            if (rs.next()) {
+
+                Receita r = new Receita();
+                r.setId(rs.getInt("id"));
+                r.setOrientacao(rs.getString("orientacao"));
+
+                Consulta con = new Consulta();
+                con.setId(rs.getInt("medico_id"));
+                r.setConsulta(con);
+            }
         }
         return null;
     }
@@ -116,7 +178,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 ps_medico.execute();
 
-                System.out.println("O Medico com CPF = " + m.getCpf() + " foi cadastrado com sucesso!\n");
+                System.out.println("\nO Medico com CPF = " + m.getCpf() + " foi cadastrado com sucesso!\n");
             } else {
 
                 PreparedStatement ps_pessoa = this.con.prepareStatement("update tb_pessoa set"
@@ -143,15 +205,84 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 System.out.println("O Registro do Medico com CPF = " + m.getCpf() + " foi alterado com sucesso!\n");
             }
+        } else if (o instanceof Consulta) {
+            Consulta c = (Consulta) o;
+
+            if (c.getData() == null) {
+                PreparedStatement ps_consulta = this.con.prepareStatement("insert into tb_consulta"
+                        + " (id, data, data_retorno, observacao, valor, medico_id, pet_id)"
+                        + " values (nextval('seq_consulta_id'), now(), ?, ?, ?, ?, ?) returning id");
+
+                ps_consulta.setTimestamp(1, new Timestamp(c.getData_retorno().getTimeInMillis()));
+                ps_consulta.setString(2, c.getObservacao());
+                ps_consulta.setFloat(3, c.getValor());
+                ps_consulta.setString(4, c.getMedico().getCpf());
+                ps_consulta.setInt(5, c.getPet().getId());
+
+                ResultSet rs = ps_consulta.executeQuery();
+
+                if (rs.next()) {
+                    c.setId(rs.getInt(1));
+                }
+
+                System.out.println("A consulta com Id = " + c.getId() + " foi cadastrada com sucesso!\n");
+            } else {
+                PreparedStatement ps_consulta = this.con.prepareStatement("update tb_consulta set"
+                        + " data_retorno = ?, observacao = ?, valor = ?, medico_id = ?, pet_id = ?  where id = ?; ");
+
+                ps_consulta.setTimestamp(1, new Timestamp(c.getData_retorno().getTimeInMillis()));
+                ps_consulta.setString(2, c.getObservacao());
+                ps_consulta.setFloat(3, c.getValor());
+                ps_consulta.setString(4, c.getMedico().getCpf());
+                ps_consulta.setInt(5, c.getPet().getId());
+                ps_consulta.setInt(6, c.getId());
+
+                System.out.println("A consulta com Id = " + c.getId() + " foi atualizada com sucesso!\n");
+            }
+        } else if (o instanceof Receita) {
+            Receita r = (Receita) o;
+
+            if (r.getId() == null) {
+                PreparedStatement ps_receita = this.con.prepareStatement("insert into tb_receita "
+                        + "(id, orientacao, consulta_id) values (nextval('seq_receita_id'), ?, ?) returning id");
+                ps_receita.setString(1, r.getOrientacao());
+                ps_receita.setInt(2, r.getConsulta().getId());
+
+                ResultSet rs = ps_receita.executeQuery();
+                if (rs.next()) {
+                    r.setId(rs.getInt(1));
+                }
+
+                System.out.println("A receita com id = " + r.getId() + " foi inserida com sucesso!\n");
+            } else {
+                PreparedStatement ps_receita = this.con.prepareStatement("update tb_receita set"
+                        + " orientacao = ?, consulta_id = ? where id = ?;");
+
+                ps_receita.setString(1, r.getOrientacao());
+                ps_receita.setInt(2, r.getConsulta().getId());
+
+                System.out.println("A receita com id = " + r.getId() + " foi atualizada com sucesso!\n");
+            }
         }
     }
 
     @Override
     public void remover(Object o) throws Exception {
 
-        if(o instanceof Medico){
+        if (o instanceof Medico) {
 
             Medico m = (Medico) o;
+
+            PreparedStatement ps_receita = this.con.prepareStatement("select id, medico_id from tb_consulta where medico_id = ?;");
+            ps_receita.setString(1, m.getCpf());
+            ResultSet rs = ps_receita.executeQuery();
+
+            while(rs.next()){
+                Consulta c = new Consulta();
+                c.setId(rs.getInt("id"));
+                System.out.println("Removendo a Consulta com ID = "+ c.getId() + " do banco de dados!");
+                remover(c);
+            }
 
             PreparedStatement ps_medico = this.con.prepareStatement("delete from tb_medico where cpf = ?;");
             ps_medico.setString(1, m.getCpf());
@@ -160,10 +291,31 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             ps_pessoa.setString(1, m.getCpf());
             ps_pessoa.execute();
 
-        }else if(o instanceof Consulta){
+        } else if(o instanceof Consulta) {
 
             Consulta c = (Consulta) o;
 
+            PreparedStatement ps_receita = this.con.prepareStatement("select id, orientacao, consulta_id from tb_receita where consulta_id = ?;");
+            ps_receita.setInt(1, c.getId());
+            ResultSet rs = ps_receita.executeQuery();
+
+            while(rs.next()){
+                Receita r = new Receita();
+                r.setId(rs.getInt("id"));
+                System.out.println("Removendo a receita com ID = "+ r.getId() + " do banco de dados!");
+                remover(r);
+            }
+
+            PreparedStatement ps_consulta = this.con.prepareStatement("delete from tb_consulta where id = ?;");
+            ps_consulta.setInt(1, c.getId());
+            ps_consulta.execute();
+
+        } else if (o instanceof Receita) {
+            Receita r = (Receita) o;
+
+            PreparedStatement ps_receita = this.con.prepareStatement("delete from tb_receita where id = ?;");
+            ps_receita.setInt(1, r.getId());
+            ps_receita.execute();
         }
     }
 
@@ -173,7 +325,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
         PreparedStatement ps = this.con.prepareStatement("SELECT p.cpf, p.rg, p.nome, p.senha, p.numero_celular,"
                                      +  " p.email, p.data_cadastro, p.data_nascimento, p.cep, p.endereco, p.complemento, m.numero_crmv"
-                                     +  " FROM tb_pessoa AS p INNER JOIN tb_medico AS m ON p.cpf = m.cpf;");
+                                     +  " FROM tb_pessoa p INNER JOIN tb_medico m ON p.cpf = m.cpf;");
         ResultSet rs = ps.executeQuery();
 
         lista = new ArrayList();
@@ -204,4 +356,139 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         return lista;
     }
 
+    @Override
+    public List<Consulta> listConsultas() throws Exception {
+        List<Consulta> lista = null;
+
+        PreparedStatement ps_consulta = this.con.prepareStatement("select id, data, data_retorno, observacao,"
+                + " valor, medico_id, pet_id from tb_consulta order by data desc");
+
+        ResultSet rs = ps_consulta.executeQuery();
+
+        lista = new ArrayList();
+        while(rs.next()){
+
+            Consulta con = new Consulta();
+            con.setId(rs.getInt("id"));
+
+            Calendar dtCad = Calendar.getInstance();
+            dtCad.setTimeInMillis(rs.getDate("data").getTime());
+            con.setData(dtCad);
+
+            Calendar dtRet = Calendar.getInstance();
+            dtRet.setTimeInMillis(rs.getDate("data_retorno").getTime());
+            con.setData_retorno(dtRet);
+
+            con.setObservacao(rs.getString("observacao"));
+            con.setValor(rs.getFloat("valor"));
+
+            Medico med = new Medico();
+            med.setCpf(rs.getString("medico_id"));
+            con.setMedico(med);
+
+            Pet pet = new Pet();
+            pet.setId(rs.getInt("pet_id"));
+            con.setPet(pet);
+
+            PreparedStatement ps_receita = this.con.prepareStatement("select id, orientacao from tb_receita where consulta_id = ?");
+            ps_receita.setInt(1, con.getId());
+
+            ResultSet rs2 = ps_receita.executeQuery();
+
+            while(rs2.next()){
+                Receita r = new Receita();
+                r.setId(rs2.getInt("id"));
+                r.setOrientacao(rs2.getString("orientacao"));
+
+                con.setReceita(r);
+            }
+            lista.add(con);
+
+        }
+        return lista;
+    }
+
+    @Override
+    public List<Receita> listReceitas() throws Exception {
+        List<Receita> lista = null;
+
+        PreparedStatement ps_receita = this.con.prepareStatement("select id, orientacao, consulta_id from tb_receita;");
+
+        ResultSet rs = ps_receita.executeQuery();
+
+        lista = new ArrayList();
+        while(rs.next()){
+            Receita r = new Receita();
+            r.setId(rs.getInt("id"));
+            r.setOrientacao(rs.getString("orientacao"));
+
+            Consulta con = new Consulta();
+            con.setId(rs.getInt("consulta_id"));
+            r.setConsulta(con);
+
+            lista.add(r);
+        }
+        return lista;
+    }
+
+    @Override
+    public List<Consulta> listConsultasDeUmMedico(Object o) throws Exception {
+        List<Consulta> lista = null;
+
+        lista = new ArrayList();
+        if (o instanceof Medico) {
+            Medico m = (Medico) o;
+
+            PreparedStatement ps_consulta = this.con.prepareStatement("select c.id, c.data, c.data_retorno, c.observacao,"
+                    + " c.valor, c.medico_id, c.pet_id, p.nome as nome_pet"
+                    + " from tb_consulta c inner join tb_pet p on p.id = c.pet_id"
+                    + " where medico_id = ? order by c.data desc");
+
+            ps_consulta.setString(1, m.getCpf());
+            ResultSet rs = ps_consulta.executeQuery();
+
+            while (rs.next()) {
+                Consulta con = new Consulta();
+                con.setId(rs.getInt("id"));
+
+                Calendar dtCad = Calendar.getInstance();
+                dtCad.setTimeInMillis(rs.getDate("data").getTime());
+                con.setData(dtCad);
+
+                Calendar dtRet = Calendar.getInstance();
+                dtRet.setTimeInMillis(rs.getDate("data_retorno").getTime());
+                con.setData_retorno(dtRet);
+
+                con.setObservacao(rs.getString("observacao"));
+                con.setValor(rs.getFloat("valor"));
+
+                Medico med = new Medico();
+                med.setCpf(rs.getString("medico_id"));
+                con.setMedico(med);
+
+                Pet pet = new Pet();
+                pet.setId(rs.getInt("pet_id"));
+                pet.setNome(rs.getString("nome_pet"));
+                con.setPet(pet);
+
+                PreparedStatement ps_receita = this.con.prepareStatement("select id, orientacao from tb_receita where consulta_id = ?");
+                ps_receita.setInt(1, con.getId());
+
+                ResultSet rs2 = ps_receita.executeQuery();
+
+                while(rs2.next()){
+                    Receita r = new Receita();
+                    r.setId(rs2.getInt("id"));
+                    r.setOrientacao(rs2.getString("orientacao"));
+
+                    con.setReceita(r);
+                }
+                lista.add(con);
+            }
+        }
+        else {
+            System.out.println("\nO objeto informado não é um médico!\n");
+        }
+        return lista;
+    }
 }

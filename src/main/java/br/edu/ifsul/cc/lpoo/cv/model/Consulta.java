@@ -2,6 +2,7 @@ package br.edu.ifsul.cc.lpoo.cv.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -103,5 +104,13 @@ public class Consulta implements Serializable {
 
     public void setReceitas(List<Receita> receitas) {
         this.receitas = receitas;
+    }
+
+    public void setReceita(Receita receita) {
+
+        if (this.receitas == null){
+            this.receitas = new ArrayList();
+        }
+        this.receitas.add(receita);
     }
 }

@@ -29,7 +29,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "raca_id", nullable = false)
-    private Raca reca;
+    private Raca raca;
 
     public Pet() {}
 
@@ -73,11 +73,11 @@ public class Pet {
         this.cliente = cliente;
     }
 
-    public Raca getReca() {
-        return reca;
+    public Raca getRaca() {
+        return raca;
     }
 
-    public void setReca(Raca reca) {
-        this.reca = reca;
+    public void setRaca(Raca raca) {
+        this.raca = raca;
     }
 }
