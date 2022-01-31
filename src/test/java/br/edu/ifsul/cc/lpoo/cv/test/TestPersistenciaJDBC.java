@@ -5,6 +5,7 @@ import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pet;
 import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
+import javassist.expr.Instanceof;
 import org.junit.Test;
 
 import java.text.DateFormat;
@@ -36,12 +37,12 @@ public class TestPersistenciaJDBC {
             List<Medico> lista_medicos = persistencia.listMedicos();
 
             if (!lista_medicos.isEmpty()) {
-                int i = 0;
+                int cont_medico = 0;
                 for (Medico m : lista_medicos) {
-                    i++;
-                    System.out.println("\n Medico" + i + ": "
+                    cont_medico++;
+                    System.out.println("\nMEDICO " + cont_medico + ": "
                             + "\nCPF: " + m.getCpf()
-                            + "\n RG: " + m.getRg()
+                            + "\nRG: " + m.getRg()
                             + "\nNumero CRMV: " + m.getNumero_crmv()
                             + "\nNome: " + m.getNome()
                             + "\nSenha: " + m.getSenha()
@@ -51,42 +52,49 @@ public class TestPersistenciaJDBC {
                             + "\nNúmero de Celular: " + m.getNumero_celular()
                             + "\nCEP: " + m.getCep()
                             + "\nEndereço: " + m.getEndereco()
-                            + "\nComplemento: " + m.getComplemento()
-                            + "\n-----------------------------------------------------------------------------------------------\n");
+                            + "\nComplemento: " + m.getComplemento());
 
                     List<Consulta> listaConsultasMedico = persistencia.listConsultasDeUmMedico(m);
 
                     if (!listaConsultasMedico.isEmpty()) {
-                        System.out.println("Consultas desse médico: ");
-                        int j = 0;
+                        System.out.println("\nCONSULTAS DO MÉDICO " + cont_medico + ":\n");
+                        int cont_consulta = 0;
                         for (Consulta c : listaConsultasMedico) {
-                            j++;
-                            System.out.println("\n" + j + "º Consulta:"
+                            cont_consulta++;
+                            System.out.println("CONSULTA " + cont_consulta + ":"
                                     + "\nid: " + c.getId()
                                     + "\nData: " + formato.format(c.getData().getTime())
                                     + "\nData de retorno: " + formato.format(c.getData_retorno().getTime())
                                     + "\nObservacao: " + c.getObservacao()
                                     + "\nValor: " + c.getValor()
-                                    + "\nMédico: " + c.getMedico().getCpf());
+                                    + "\nPet: " + c.getPet().getId()
+                                    + "\nMédico: " + c.getMedico().getNome() + ", Id:  " + c.getMedico().getCpf());
 
                             List<Receita> r = c.getReceitas();
-                            System.out.println("\nReceitas dessa consulta: ");
-                            byte k = 0;
-                            for (Receita res : r) {
-                                k++;
-                                System.out.println("Receita " + k + ":");
-                                System.out.println("Id: " + res.getId()
+
+                            if(r != null && !r.isEmpty()) {
+                                System.out.println("\nRECEITAS DESSA CONSULTA:\n");
+                                byte cont_receita = 0;
+                                for (Receita res : r) {
+                                    cont_receita++;
+                                    System.out.println("RECEITA " + cont_receita + ":"
+                                        + "\nId: " + res.getId()
                                         + "\nOrientação: " + res.getOrientacao());
+                                }
                             }
                         }
                     }
-                    System.out.println("O médico com CPF = "+ m.getCpf() + " será removido do banco de dados!");
-                    persistencia.remover(m);
+                    if (cont_medico == 1) {
+                        System.out.print("\n");
+                        persistencia.remover(m);
+                    }
+
                 }
 
             } else {
-                System.out.println("Nenhum Médico foi encontrado! ");
+                System.out.println("\nNenhum Médico foi encontrado! ");
                 Calendar dtNascimento = Calendar.getInstance();
+                Medico query_medico = new Medico();
 
                 Medico m = new Medico();
                 m.setCpf("123.456.789-10");
@@ -103,42 +111,86 @@ public class TestPersistenciaJDBC {
                 m.setData_nascimento(dtNascimento);
 
                 persistencia.persist(m);
+                query_medico = (Medico) persistencia.find(m.getClass(), m.getCpf());
+                System.out.println("1º Medico inserido: " + query_medico.getNome());
+
+                Medico me = new Medico();
+                me.setCpf("010.987.654-32");
+                me.setNome("Joana Ramos");
+                me.setEmail("joana@ramos.com");
+                me.setSenha("4321");
+                me.setNumero_celular("55 999999999");
+                me.setRg("123456789");
+                me.setCep("789456123");
+                me.setEndereco("7 de Setemobro");
+                me.setComplemento("Casa");
+                me.setNumero_crmv("1234");
+                dtNascimento.setTime(formato.parse("15/04/1990"));
+                me.setData_nascimento(dtNascimento);
+
+                persistencia.persist(me);
+                query_medico = (Medico) persistencia.find(me.getClass(), me.getCpf());
+                System.out.println("2° Medico inserido: " + query_medico.getNome());
 
                 List<Consulta> lista_cosultas = persistencia.listConsultas();
 
                 if (lista_cosultas.isEmpty()) {
-                    System.out.println("Nenhuma Consulta foi encontrada! ");
+                    System.out.println("\nNenhuma Consulta foi encontrada! ");
                     Calendar dt = Calendar.getInstance();
                     Float valor = 2000.00f;
+                    Consulta query_consulta = new Consulta();
 
-                    Consulta c = new Consulta();
-
-                    dt.setTime(formato.parse("10/05/2022"));
-                    c.setData_retorno(dt);
-                    c.setObservacao("Voltar em maio");
-                    c.setValor(valor);
-                    c.setMedico(m);
                     Pet p = new Pet();
                     p.setId(1);
+
+                    Consulta c = new Consulta();
+                    dt.setTime(formato.parse("10/05/2022"));
+                    c.setData_retorno(dt);
+                    c.setObservacao("Essa consulta NÃO possui receitas");
+                    c.setValor(valor);
+                    c.setMedico(m);
                     c.setPet(p);
 
                     persistencia.persist(c);
+                    query_consulta = (Consulta) persistencia.find(c.getClass(), c.getId());
+                    System.out.println("A consulta " + query_consulta.getId() + " foi inserida, pelo médico "
+                            + query_consulta.getMedico().getCpf());
+
+                    c = new Consulta();
+                    dt.setTime(formato.parse("10/05/2022"));
+                    c.setData_retorno(dt);
+                    c.setObservacao("Essa consulta possui receitas");
+                    c.setValor(valor);
+                    c.setMedico(me);
+                    c.setPet(p);
+
+                    persistencia.persist(c);
+                    query_consulta = (Consulta) persistencia.find(c.getClass(), c.getId());
+                    System.out.println("A consulta " + query_consulta.getId() + " foi inserida, pelo médico "
+                            + query_consulta.getMedico().getCpf());
 
                     List<Receita> lista = persistencia.listReceitas();
 
                     if (lista.isEmpty()) {
-                        System.out.println("Nenhuma Receita foi encontrada! ");
+                        System.out.println("\nNenhuma Receita foi encontrada! ");
+                        Receita query_receita = new Receita();
 
                         Receita r = new Receita();
 
                         r.setOrientacao("Cuidar do cachorro");
                         r.setConsulta(c);
                         persistencia.persist(r);
+                        query_receita = (Receita) persistencia.find(r.getClass(), r.getId());
+                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta "
+                                + query_receita.getConsulta().getId());
 
-                        Receita re = new Receita();
-                        re.setOrientacao("Não estressar o cachorro.");
-                        re.setConsulta(c);
-                        persistencia.persist(re);
+                        r = new Receita();
+                        r.setOrientacao("Não estressar o cachorro.");
+                        r.setConsulta(c);
+                        persistencia.persist(r);
+                        query_receita = (Receita) persistencia.find(r.getClass(), r.getId());
+                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta "
+                                + query_receita.getConsulta().getId());
                     }
                 }
             }
@@ -164,7 +216,7 @@ public class TestPersistenciaJDBC {
                     i++;
                     System.out.println("\n" + i + "º Medico: \n"
                             + "CPF: " + m.getCpf()
-                            + "\n RG: " + m.getRg()
+                            + "\nRG: " + m.getRg()
                             + "\nNumero CRMV: " + m.getNumero_crmv()
                             + "\nNome: " + m.getNome()
                             + "\nSenha: " + m.getSenha()
@@ -174,10 +226,8 @@ public class TestPersistenciaJDBC {
                             + "\nNúmero de Celular: " + m.getNumero_celular()
                             + "\nCEP: " + m.getCep()
                             + "\nEndereço: " + m.getEndereco()
-                            + "\nComplemento: " + m.getComplemento()
-                            + "\n-----------------------------------------------------------------------------------------------\n");
+                            + "\nComplemento: " + m.getComplemento());
 
-                    System.out.println("O médico com CPF = "+ m.getCpf() + " será removido do banco de dados!");
                     persistencia.remover(m);
                 }
             } else {
@@ -231,19 +281,21 @@ public class TestPersistenciaJDBC {
                             + "\nData de retorno: " + formato.format(c.getData_retorno().getTime())
                             + "\nObservacao: " + c.getObservacao()
                             + "\nValor: " + c.getValor()
-                            + "\nMédico: " + c.getMedico().getCpf());
+                            + "\nMédico: " + c.getMedico().getNome() + ", Id = " + c.getMedico().getCpf());
 
                     List<Receita> r = c.getReceitas();
-                    System.out.println("Receitas: ");
-                    byte k=0;
-                    for (Receita res : r) {
-                        k++;
-                        System.out.println("Receita " + k + ":");
-                        System.out.println("Id: " + res.getId()
-                                + "\nOrientação: " + res.getOrientacao());
+
+                    if(r != null && !r.isEmpty()) {
+                        System.out.println("\nRECEITAS DESSA CONSULTA:\n");
+                        byte cont_receita = 0;
+                        for (Receita res : r) {
+                            cont_receita++;
+                            System.out.println("RECEITA " + cont_receita + ":"
+                                    + "\nId: " + res.getId()
+                                    + "\nOrientação: " + res.getOrientacao());
+                        }
                     }
 
-                    System.out.println("O Consulta com código = "+ c.getId() + " será removida do banco de dados!");
                     persistencia.remover(c);
                 }
             } else {
@@ -291,10 +343,8 @@ public class TestPersistenciaJDBC {
                     System.out.println("\n" + i + "º Receita: \n"
                             + "id: " + r.getId()
                             + "\nOrientação: " + r.getOrientacao()
-                            + "\nConsulta: " + r.getConsulta().getId()
-                            + "\n-----------------------------------------------------------------------------------------------\n");
+                            + "\nConsulta: " + r.getConsulta().getId());
 
-                    System.out.println("A receita com id = "+ r.getId() + " será removida do banco de dados!");
                     persistencia.remover(r);
                 }
             } else {
@@ -304,14 +354,14 @@ public class TestPersistenciaJDBC {
 
                 r.setOrientacao("Cuidar do cachorro");
                 Consulta c = new Consulta();
-                c.setId(2);
+                c.setId(20);
                 r.setConsulta(c);
                 persistencia.persist(r);
 
                 Receita re = new Receita();
                 re.setOrientacao("Não estressar o cachorro.");
                 Consulta con = new Consulta();
-                con.setId(2);
+                con.setId(20);
                 re.setConsulta(con);
                 persistencia.persist(re);
             }
