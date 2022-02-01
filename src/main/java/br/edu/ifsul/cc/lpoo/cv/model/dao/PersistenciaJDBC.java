@@ -276,15 +276,24 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
             Medico m = (Medico) o;
 
-            PreparedStatement ps_receita = this.con.prepareStatement("select id, medico_id from tb_consulta where medico_id = ?;");
-            ps_receita.setString(1, m.getCpf());
-            ResultSet rs = ps_receita.executeQuery();
+            PreparedStatement ps_consulta = this.con.prepareStatement("select id, medico_id from tb_consulta where medico_id = ?;");
+            ps_consulta.setString(1, m.getCpf());
+            ResultSet rs = ps_consulta.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 Consulta c = new Consulta();
                 c.setId(rs.getInt("id"));
-                remover(c);
+
+                PreparedStatement ps_remove_receita = this.con.prepareStatement("delete from tb_receita where consulta_id = ?;");
+                ps_remove_receita.setInt(1, c.getId());
+                ps_remove_receita.execute();
             }
+
+            PreparedStatement ps_remove_consulta = this.con.prepareStatement("delete from tb_consulta where medico_id = ?;");
+            ps_remove_consulta.setString(1, m.getCpf());
+            ps_remove_consulta.execute();
+            System.out.println("Todas as consultas e receitas relacionadas ao médico com CPF = " + m.getCpf() + ", foram removidos do banco de dados." );
+
 
             PreparedStatement ps_medico = this.con.prepareStatement("delete from tb_medico where cpf = ?;");
             ps_medico.setString(1, m.getCpf());
@@ -302,10 +311,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             ps_receita.setInt(1, c.getId());
             ResultSet rs = ps_receita.executeQuery();
 
-            while(rs.next()){
-                Receita r = new Receita();
-                r.setId(rs.getInt("id"));
-                remover(r);
+            if (rs.next()){
+                PreparedStatement ps_remove_receita = this.con.prepareStatement("delete from tb_receita where consulta_id = ?;");
+                ps_remove_receita.setInt(1, c.getId());
+                ps_remove_receita.execute();
+                System.out.println("Todas as receitas relacionadas a consulta com id = "+ c.getId() + ", foram removidas do banco de dados!");
             }
 
             PreparedStatement ps_consulta = this.con.prepareStatement("delete from tb_consulta where id = ?;");

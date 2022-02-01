@@ -354,14 +354,14 @@ public class TestPersistenciaJDBC {
 
                 r.setOrientacao("Cuidar do cachorro");
                 Consulta c = new Consulta();
-                c.setId(20);
+                c.setId(3);
                 r.setConsulta(c);
                 persistencia.persist(r);
 
                 Receita re = new Receita();
                 re.setOrientacao("Não estressar o cachorro.");
                 Consulta con = new Consulta();
-                con.setId(20);
+                con.setId(3);
                 re.setConsulta(con);
                 persistencia.persist(re);
             }

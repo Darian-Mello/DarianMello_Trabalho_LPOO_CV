@@ -36,9 +36,10 @@ public class Venda {
     @Enumerated(EnumType.STRING)
     private Pagamento pagamento;
 
-    @ManyToOne
-    @JoinColumn(name = "consulta_id", nullable = false)
-    private Consulta consulta;
+    @ManyToMany
+    @JoinTable(name = "tb_venda_conulta", joinColumns = {@JoinColumn(name = "venda_id")},
+            inverseJoinColumns = {@JoinColumn(name = "consulta_id")})
+    private List<Consulta> consulta;
 
     @ManyToMany
     @JoinTable(name = "tb_venda_produto", joinColumns = {@JoinColumn(name = "venda_id")},
@@ -103,11 +104,11 @@ public class Venda {
         this.pagamento = pagamento;
     }
 
-    public Consulta getConsulta() {
+    public List<Consulta> getConsulta() {
         return consulta;
     }
 
-    public void setConsulta(Consulta consulta) {
+    public void setConsulta(List<Consulta> consulta) {
         this.consulta = consulta;
     }
 
