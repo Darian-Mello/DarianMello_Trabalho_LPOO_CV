@@ -267,6 +267,7 @@ public class TestPersistenciaJDBC {
         if (persistencia.conexaoAberta()) {
 
             List<Consulta> lista = persistencia.listConsultas();
+            List<Medico> lista_medico = persistencia.listMedicos();
 
             if (!lista.isEmpty()) {
                 DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -298,8 +299,15 @@ public class TestPersistenciaJDBC {
 
                     persistencia.remover(c);
                 }
-            } else {
+            } else if (!lista_medico.isEmpty()) {
                 System.out.println("Nenhuma Consulta foi encontrada! ");
+
+                Medico med = new Medico();
+                for (Medico m : lista_medico) {
+                    med.setCpf(m.getCpf());
+                    break;
+                }
+
 
                 DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
                 Calendar dt = Calendar.getInstance();
@@ -314,8 +322,6 @@ public class TestPersistenciaJDBC {
                 Pet p = new Pet();
                 p.setId(1);
                 c.setPet(p);
-                Medico med = new Medico();
-                med.setCpf("123.456.789-10");
                 c.setMedico(med);
 
                 persistencia.persist(c);
@@ -334,6 +340,7 @@ public class TestPersistenciaJDBC {
         if (persistencia.conexaoAberta()) {
 
             List<Receita> lista = persistencia.listReceitas();
+            List<Consulta> lista_consulta = persistencia.listConsultas();
 
             if (!lista.isEmpty()) {
 
@@ -347,23 +354,19 @@ public class TestPersistenciaJDBC {
 
                     persistencia.remover(r);
                 }
-            } else {
+            } else if (!lista_consulta.isEmpty()) {
                 System.out.println("Nenhuma Receita foi encontrada! ");
 
                 Receita r = new Receita();
+                Consulta c = new Consulta();
+                for (Consulta con : lista_consulta) {
+                    c.setId(con.getId());
+                    break;
+                }
 
                 r.setOrientacao("Cuidar do cachorro");
-                Consulta c = new Consulta();
-                c.setId(3);
                 r.setConsulta(c);
                 persistencia.persist(r);
-
-                Receita re = new Receita();
-                re.setOrientacao("Não estressar o cachorro.");
-                Consulta con = new Consulta();
-                con.setId(3);
-                re.setConsulta(con);
-                persistencia.persist(re);
             }
 
             persistencia.fecharConexao();

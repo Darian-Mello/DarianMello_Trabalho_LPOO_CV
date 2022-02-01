@@ -207,7 +207,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 ps_medico.execute();
 
-                System.out.println("O Registro do Medico com CPF = " + m.getCpf() + " foi alterado com sucesso!\n");
             }
         } else if (o instanceof Consulta) {
             Consulta c = (Consulta) o;
@@ -229,7 +228,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                     c.setId(rs.getInt(1));
                 }
 
-                //System.out.println("A consulta com Id = " + c.getId() + " foi cadastrada com sucesso!\n");
             } else {
                 PreparedStatement ps_consulta = this.con.prepareStatement("update tb_consulta set"
                         + " data_retorno = ?, observacao = ?, valor = ?, medico_id = ?, pet_id = ?  where id = ?; ");
@@ -241,7 +239,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps_consulta.setInt(5, c.getPet().getId());
                 ps_consulta.setInt(6, c.getId());
 
-                System.out.println("A consulta com Id = " + c.getId() + " foi atualizada com sucesso!\n");
             }
         } else if (o instanceof Receita) {
             Receita r = (Receita) o;
@@ -257,7 +254,6 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                     r.setId(rs.getInt(1));
                 }
 
-                //System.out.println("A receita com id = " + r.getId() + " foi inserida com sucesso!\n");
             } else {
                 PreparedStatement ps_receita = this.con.prepareStatement("update tb_receita set"
                         + " orientacao = ?, consulta_id = ? where id = ?;");
@@ -292,7 +288,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             PreparedStatement ps_remove_consulta = this.con.prepareStatement("delete from tb_consulta where medico_id = ?;");
             ps_remove_consulta.setString(1, m.getCpf());
             ps_remove_consulta.execute();
-            System.out.println("Todas as consultas e receitas relacionadas ao médico com CPF = " + m.getCpf() + ", foram removidos do banco de dados." );
+            System.out.println("Todas as consultas e receitas relacionadas ao médico com CPF = " + m.getCpf() + ", foram removidas do banco de dados." );
 
 
             PreparedStatement ps_medico = this.con.prepareStatement("delete from tb_medico where cpf = ?;");
