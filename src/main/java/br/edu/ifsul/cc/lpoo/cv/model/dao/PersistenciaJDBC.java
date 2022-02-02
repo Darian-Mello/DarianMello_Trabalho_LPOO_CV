@@ -84,8 +84,11 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 return m;
             }
         } else if (c == Consulta.class) {
-            PreparedStatement ps_consulta = this.con.prepareStatement("select id, data, data_retorno, observacao,"
-                    + " valor, medico_id, pet_id from tb_consulta where id = ?;");
+            PreparedStatement ps_consulta = this.con.prepareStatement(
+                    "select c.id, c.data, c.data_retorno, c.observacao,"
+                    + " c.valor, c.medico_id, c.pet_id, p.nome as nome_medico from tb_consulta c"
+                    + " inner join tb_medico m on c.medico_id = m.cpf"
+                    + " inner join tb_pessoa p on p.cpf = m.cpf where c.id = ?;");
 
             ps_consulta.setInt(1, Integer.parseInt(id.toString()));
 
@@ -109,6 +112,7 @@ public class PersistenciaJDBC implements InterfacePersistencia {
 
                 Medico med = new Medico();
                 med.setCpf(rs.getString("medico_id"));
+                med.setNome(rs.getString("nome_medico"));
                 con.setMedico(med);
 
                 Pet pet = new Pet();

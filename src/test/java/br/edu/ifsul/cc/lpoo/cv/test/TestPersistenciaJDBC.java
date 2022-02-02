@@ -154,7 +154,7 @@ public class TestPersistenciaJDBC {
                     persistencia.persist(c);
                     query_consulta = (Consulta) persistencia.find(c.getClass(), c.getId());
                     System.out.println("A consulta " + query_consulta.getId() + " foi inserida, pelo médico "
-                            + query_consulta.getMedico().getCpf());
+                            + query_consulta.getMedico().getNome() + ", CPF = " + query_consulta.getMedico().getCpf());
 
                     c = new Consulta();
                     dt.setTime(formato.parse("10/05/2022"));
@@ -167,7 +167,7 @@ public class TestPersistenciaJDBC {
                     persistencia.persist(c);
                     query_consulta = (Consulta) persistencia.find(c.getClass(), c.getId());
                     System.out.println("A consulta " + query_consulta.getId() + " foi inserida, pelo médico "
-                            + query_consulta.getMedico().getCpf());
+                            + query_consulta.getMedico().getNome() + ", CPF = " + query_consulta.getMedico().getCpf());
 
                     List<Receita> lista = persistencia.listReceitas();
 
@@ -181,7 +181,7 @@ public class TestPersistenciaJDBC {
                         r.setConsulta(c);
                         persistencia.persist(r);
                         query_receita = (Receita) persistencia.find(r.getClass(), r.getId());
-                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta "
+                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta com id = "
                                 + query_receita.getConsulta().getId());
 
                         r = new Receita();
@@ -189,7 +189,7 @@ public class TestPersistenciaJDBC {
                         r.setConsulta(c);
                         persistencia.persist(r);
                         query_receita = (Receita) persistencia.find(r.getClass(), r.getId());
-                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta "
+                        System.out.println("A receita " + query_receita.getId() + " foi inserida, pela consulta com id = "
                                 + query_receita.getConsulta().getId());
                     }
                 }
