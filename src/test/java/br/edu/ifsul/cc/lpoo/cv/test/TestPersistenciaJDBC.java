@@ -199,7 +199,7 @@ public class TestPersistenciaJDBC {
         }
     }
 
-    //@Test
+    @Test
     public void testListPersistenciaMedico() throws Exception {
 
         PersistenciaJDBC persistencia = new PersistenciaJDBC();

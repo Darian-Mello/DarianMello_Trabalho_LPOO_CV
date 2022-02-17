@@ -1,9 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cv.model.dao;
 
-import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
-import br.edu.ifsul.cc.lpoo.cv.model.Medico;
-import br.edu.ifsul.cc.lpoo.cv.model.Pet;
-import br.edu.ifsul.cc.lpoo.cv.model.Receita;
+import br.edu.ifsul.cc.lpoo.cv.model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -510,5 +507,30 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             System.out.println("\nO objeto informado não é um médico!\n");
         }
         return lista;
+    }
+
+    @Override
+    public Pessoa doLogin(String email, String senha) throws Exception {
+
+
+        Pessoa p = null;
+
+        PreparedStatement ps =
+                this.con.prepareStatement("select p.email, p.senha from tb_pessoa p where p.email = ? and p.senha = ? ");
+
+        ps.setString(1, email);
+        ps.setString(2, senha);
+
+        ResultSet rs = ps.executeQuery();//o ponteiro do REsultSet inicialmente está na linha -1
+
+        if(rs.next()){//se a matriz (ResultSet) tem uma linha
+
+            p = new Pessoa();
+            p.setEmail(rs.getString("email"));
+        }
+
+        ps.close();
+        return p;
+
     }
 }

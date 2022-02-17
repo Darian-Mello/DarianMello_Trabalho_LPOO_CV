@@ -2,6 +2,7 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao;
 
 import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
+import br.edu.ifsul.cc.lpoo.cv.model.Pessoa;
 import br.edu.ifsul.cc.lpoo.cv.model.Receita;
 
 import javax.persistence.EntityManager;
@@ -61,5 +62,17 @@ public class PersistenciaJPA implements InterfacePersistencia {
 
     public List<Consulta> listConsultasDeUmMedico(Object o) throws Exception{
         throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
+    }
+
+    @Override
+    public Pessoa doLogin(String email, String senha) throws Exception {
+
+        List<Pessoa> list = entity.createNamedQuery("Pessoa.login").setParameter("paramN", email).setParameter("paramS", senha).getResultList();
+        if(list.isEmpty()){
+            return null;
+        }else{
+            return list.get(0);
+        }
+
     }
 }

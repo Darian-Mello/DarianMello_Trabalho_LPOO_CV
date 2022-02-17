@@ -8,6 +8,10 @@ import java.util.Calendar;
 @Table(name = "tb_pessoa")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo")
+@NamedQueries({
+        @NamedQuery(name="Pessoa.login",
+                query="SELECT p.email from Pessoa p where p.email = :paramN and p.senha = :paramS")
+})
 public class Pessoa implements Serializable {
 
     @Id
