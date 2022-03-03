@@ -3,6 +3,7 @@ package br.edu.ifsul.cc.lpoo.cv;
 import br.edu.ifsul.cc.lpoo.cv.gui.JFramePrincipal;
 import br.edu.ifsul.cc.lpoo.cv.gui.JMenuBarHome;
 import br.edu.ifsul.cc.lpoo.cv.gui.JPanelHome;
+import br.edu.ifsul.cc.lpoo.cv.gui.medico.JPanelMedico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pessoa;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.autenticacao.JPanelAutenticacao;
@@ -15,6 +16,7 @@ public class Controle {
     private JPanelAutenticacao pnlAutenticacao; //painel para a autenticacao do Jogador.
     private JMenuBarHome menuBar; //menu principal
     private JPanelHome pnlHome; // paine de boas vindas (home)
+    private JPanelMedico pnlMedico;
 
     public Controle() {}
 
@@ -44,8 +46,12 @@ public class Controle {
 
         pnlHome = new JPanelHome(this);
 
+        pnlMedico = new JPanelMedico(this);
+
         frame.addTela(pnlAutenticacao, "tela_autenticacao");//carta 1
         frame.addTela(pnlHome, "tela_home");//carta 2
+        frame.addTela(pnlMedico, "tela_medicos_listagem");
+        //frame.addTela(pnlMedico, "tela_medico_formulario");
 
         frame.showTela("tela_autenticacao"); // apreseta a carta cujo nome é "tela_autenticacao"
 
@@ -78,6 +84,21 @@ public class Controle {
     }
 
     public void showTela(String nomeTela){
-        frame.showTela(nomeTela);
+        if(nomeTela.equals("tela_autenticacao")){
+
+            pnlAutenticacao.cleanForm();
+            frame.showTela(nomeTela);
+            pnlAutenticacao.requestFocus();
+
+        }else if(nomeTela.equals("tela_medicos_listagem")){
+
+            pnlMedico.showTela("tela_medicos_listagem");
+            frame.showTela(nomeTela);
+
+        }
+    }
+
+    public PersistenciaJDBC getConexaoJDBC() {
+        return conexaoJDBC;
     }
 }

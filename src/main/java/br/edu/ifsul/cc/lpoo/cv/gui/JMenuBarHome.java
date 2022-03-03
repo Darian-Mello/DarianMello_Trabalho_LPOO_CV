@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 public class JMenuBarHome extends JMenuBar implements ActionListener {
     private JMenu menuArquivo;
     private JMenuItem menuItemSair;
+    private JMenuItem menuItemLogout;
 
     private JMenu menuCadastro;
     private JMenuItem menuItemPessoa;
@@ -30,26 +31,33 @@ public class JMenuBarHome extends JMenuBar implements ActionListener {
         menuArquivo.setToolTipText("Arquivo"); //acessibilidade
         menuArquivo.setFocusable(true); //acessibilidade
 
+        menuItemLogout = new JMenuItem("Logout");
+        menuItemLogout.setToolTipText("Logout"); //acessibilidade
+        menuItemLogout.setFocusable(true);     //acessibilidade
+
+        menuItemLogout.addActionListener(this);
+        menuItemLogout.setActionCommand("menu_logout");
+        menuArquivo.add(menuItemLogout);
 
         menuItemSair = new JMenuItem("Sair");
         menuItemSair.setToolTipText("Sair"); //acessibilidade
         menuItemSair.setFocusable(true);     //acessibilidade
-
-        menuItemSair.addActionListener(this);
-        menuItemSair.setActionCommand("menu_sair");
-        menuArquivo.add(menuItemSair);
 
         menuCadastro = new JMenu("Cadastros");
         menuCadastro.setMnemonic(KeyEvent.VK_C);//ativa o ALT + C para acessar esse menu - acessibilidade
         menuCadastro.setToolTipText("Cadastro"); //acessibilidade
         menuCadastro.setFocusable(true); //acessibilidade
 
-        menuItemPessoa = new JMenuItem("Pessoa");
+        menuItemSair.addActionListener(this);
+        menuItemSair.setActionCommand("menu_sair");
+        menuArquivo.add(menuItemSair);
+
+        menuItemPessoa = new JMenuItem("Medicos");
         menuItemPessoa.setToolTipText("Pessoa"); //acessibilidade
         menuItemPessoa.setFocusable(true); //acessibilidade
 
         menuItemPessoa.addActionListener(this);
-        menuItemPessoa.setActionCommand("menu_jogador");
+        menuItemPessoa.setActionCommand("menu_medico");
         menuCadastro.add(menuItemPessoa);
 
         this.add(menuArquivo);
@@ -70,10 +78,10 @@ public class JMenuBarHome extends JMenuBar implements ActionListener {
             }
 
 
-        }else if(e.getActionCommand().equals(menuItemPessoa.getActionCommand())){
+        } else if(e.getActionCommand().equals(menuItemPessoa.getActionCommand())){
 
             //se o usuario clicou no menuitem Usuario
-            controle.showTela("tela_jogador");
+            controle.showTela("tela_medicos_listagem");
         }
 
     }

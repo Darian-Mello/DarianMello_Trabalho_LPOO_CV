@@ -28,7 +28,7 @@ public class TestPersistenciaJDBC {
 
     }
 
-    @Test
+    //@Test
     public void testPersistenciaCV() throws Exception {
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
         if (persistencia.conexaoAberta()) {
@@ -199,7 +199,7 @@ public class TestPersistenciaJDBC {
         }
     }
 
-    @Test
+    //@Test
     public void testListPersistenciaMedico() throws Exception {
 
         PersistenciaJDBC persistencia = new PersistenciaJDBC();
