@@ -5,10 +5,14 @@ import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public class JPanelMedicoFormulario extends JPanel {
+public class JPanelMedicoFormulario extends JPanel implements ActionListener {
     private JPanelMedico pnlMedico;
     private Controle controle;
 
@@ -16,7 +20,6 @@ public class JPanelMedicoFormulario extends JPanel {
     private JTabbedPane tbpAbas;
 
     private JPanel pnlDadosCadastrais;
-    private JPanel pnlCentroDadosCadastrais;
 
     private GridBagLayout gridBagLayoutDadosCadastrais;
     private JLabel lblCpf;
@@ -97,38 +100,84 @@ public class JPanelMedicoFormulario extends JPanel {
 
     }*/
 
-    /*public Jogador getJogadorbyFormulario(){
+    public Medico getMedicobyFormulario() {
 
-        //validacao do formulario
-        if(txfNickname.getText().trim().length() > 4 &&
-                new String(txfSenha.getPassword()).trim().length() > 3 &&
-                cbxEndereco.getSelectedIndex() > 0){
+        String mensagem = "";
+        Calendar dtNascimento = Calendar.getInstance();
 
-            Jogador j = new Jogador();
-            j.setNickname(txfNickname.getText().trim());
-            j.setSenha(new String(txfSenha.getPassword()).trim());
-            j.setEndereco((Endereco) cbxEndereco.getSelectedItem());
-            j.setPontos(Integer.parseInt(txfPontos.getText().trim()));
-
-            if(jogador != null)
-                j.setData_cadastro(jogador.getData_cadastro());
-
-            if(jogador != null)
-                j.setData_ultimo_login(jogador.getData_ultimo_login());
-
-
-            return j;
+        if(txfCpf.getText().trim().length() < 11 ){
+            txfCpf.requestFocus();
+            mensagem = "Por favor, insira o CPF com os 11 caracteres (apenas os números).";
+        } else if (new String(txfSenha.getPassword()).trim().length() < 6) {
+            txfSenha.requestFocus();
+            mensagem = "Por favor, insira uma senha com no mínimo 8 caracteres.";
+        } else if (txfNome.getText().trim().length() < 4) {
+            txfNome.requestFocus();
+            mensagem = "Por favor, insira um nome com no mínimo 4 caracteres.";
+        } else if (txfRg.getText().trim().length() < 10) {
+            txfRg.requestFocus();
+            mensagem = "Por favor, insira o RG com os 10 caracteres.";
+        } else if (txfNumeroCrmv.getText().trim().length() < 4) {
+            txfNumeroCrmv.requestFocus();
+            mensagem = "Por favor, insira o númoro CRMV com no míimo 4 caracteres.";
+        } else if (txfNumeroCelular.getText().trim().length() < 11) {
+            txfNumeroCelular.requestFocus();
+            mensagem = "Por favor, insira o número de telefone no formato: \"55999999999\".";
+        } else if (txfEmail.getText().trim().length() < 4) {
+            txfEmail.requestFocus();
+            mensagem = "Por favor, insira um email com no mínimo 4 caractertes.";
+        } else if (txfCep.getText().trim().length() < 4) {
+            txfCep.requestFocus();
+            mensagem = "Por favor, insira um CEP com 8 caractertes (apenas os números).";
+        } else if (txfEndereco.getText().trim().length() < 4) {
+            txfEndereco.requestFocus();
+            mensagem = "Por favor, insira um endereço com no mínimo 4 caractertes.";
+        } else if (txfComplemento.getText().trim().length() < 4) {
+            txfComplemento.requestFocus();
+            mensagem = "Por favor, insira um Complemento com no mínimo 4 caractertes.";
+        } else {
+            try {
+                DateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+                dtNascimento.setTime(formato.parse(txfDataNascimento.getText().trim()));
+            } catch (Exception ex) {
+                txfDataNascimento.requestFocus();
+                mensagem = "Por favor, insira a data de nascimento no formato: \"dd/MM/yyyy\"";
+            }
         }
 
-        return null;
-    }*/
+        if (mensagem != "") {
+            JOptionPane.showMessageDialog(this, mensagem, "Edição", JOptionPane.INFORMATION_MESSAGE);
+            return null;
+        }
+
+        Medico m = new Medico();
+        m.setCpf(txfCpf.getText().trim());
+        m.setSenha(new String(txfSenha.getPassword()).trim());
+        m.setNome(txfNome.getText().trim());
+        m.setRg(txfRg.getText().trim());
+        m.setNumero_crmv(txfNumeroCrmv.getText().trim());;
+        m.setNumero_celular(txfNumeroCelular.getText().trim());
+        m.setEmail(txfEmail.getText().trim());
+        m.setCep(txfCep.getText().trim());
+        m.setEndereco(txfEndereco.getText().trim());
+        m.setComplemento(txfComplemento.getText().trim());
+        m.setData_nascimento(dtNascimento);
+        if(medico != null) {
+            m.setData_cadastro(medico.getData_cadastro());
+        }
+
+        return m;
+    }
 
     public void setMedicoFormulario(Medico m){
 
-        if(m == null){//se o parametro estiver nullo, limpa o formulario
+        if(m == null){
+            Calendar c = Calendar.getInstance();//recupera a data atual do computador.
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+
             txfCpf.setText("");
             txfSenha.setText("");
-            txfTipo.setText("");
+            txfTipo.setText("medico");
             txfNome.setText("");
             txfRg.setText("");
             txfNumeroCrmv.setText("");
@@ -138,22 +187,31 @@ public class JPanelMedicoFormulario extends JPanel {
             txfCep.setText("");
             txfEndereco.setText("");
             txfComplemento.setText("");
-            txfDataCadastro.setText("");
+            txfDataCadastro.setText(df.format(c.getTime()));
             txfCpf.setEditable(true);
+            txfDataCadastro.setEditable(false);
+            txfTipo.setEditable(false);
             medico = null;
-
         }else{
-/*
-            Medico = m;
-            txfNickname.setEditable(false);
-            txfNickname.setText(.getNickname());
-            txfSenha.setText(jogador.getSenha());
-            cbxEndereco.getModel().setSelectedItem(jogador.getEndereco());
-            txfPontos.setText(jogador.getPontos().toString());
-            txfDataCadastro.setText(format.format(j.getData_cadastro().getTime()));
-            if(j.getData_ultimo_login() != null)
-                txfDataUltimoLogin.setText(format.format(j.getData_ultimo_login().getTime()));
-*/
+            medico = m;
+            txfCpf.setEditable(false);
+            txfDataCadastro.setEditable(false);
+            txfTipo.setEditable(false);
+            txfCpf.setText(medico.getCpf());
+            txfSenha.setText(medico.getSenha());
+            txfEndereco.setText(medico.getEndereco());
+            txfTipo.setText("medico");
+            txfNome.setText(medico.getNome());
+            txfRg.setText(medico.getRg());
+            txfNumeroCrmv.setText(medico.getNumero_crmv());
+            txfNumeroCelular.setText(medico.getNumero_celular());
+            txfEmail.setText(medico.getEmail());
+            txfDataNascimento.setText(format.format(medico.getData_nascimento().getTime()));
+            txfCep.setText(medico.getCep());
+            txfComplemento.setText(medico.getComplemento());
+            txfDataCadastro.setText(format.format(m.getData_cadastro().getTime()));
+            if(m.getData_nascimento() != null)
+                txfDataNascimento.setText(format.format(m.getData_nascimento().getTime()));
         }
 
     }
@@ -172,172 +230,172 @@ public class JPanelMedicoFormulario extends JPanel {
 
         lblCpf = new JLabel("CPF: ");
         GridBagConstraints posicionador = new GridBagConstraints();
-        posicionador.gridy = 0;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblCpf, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 0;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblCpf, posicionador);
 
         txfCpf = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 0;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfCpf, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 0;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfCpf, posicionador);
 
         lblNumeroCrmv = new JLabel("Número CRMV: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 1;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblNumeroCrmv, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 1;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblNumeroCrmv, posicionador);
 
         txfNumeroCrmv = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 1;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfNumeroCrmv, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 1;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfNumeroCrmv, posicionador);
 
         lblRg = new JLabel("RG: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 2;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblRg, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 2;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblRg, posicionador);
 
         txfRg = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 2;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfRg, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 2;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfRg, posicionador);
 
         lblNome = new JLabel("Nome: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 3;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblNome, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 3;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblNome, posicionador);
 
         txfNome = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 3;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfNome, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 3;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfNome, posicionador);
 
         lblNumeroCelular = new JLabel("Número de celular: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 4;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblNumeroCelular, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 4;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblNumeroCelular, posicionador);
 
         txfNumeroCelular = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 4;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfNumeroCelular, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 4;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfNumeroCelular, posicionador);
 
         lblSenha = new JLabel("Senha:");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 5;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblSenha, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 5;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblSenha, posicionador);
 
         txfSenha = new JPasswordField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 5;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfSenha, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 5;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfSenha, posicionador);
 
         lblEmail = new JLabel("Email:");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 6;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblEmail, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 6;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblEmail, posicionador);
 
         txfEmail = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 6;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfEmail, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 6;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfEmail, posicionador);
 
         lblDataNascimento = new JLabel("Data de nascimento:");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 7;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblDataNascimento, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 7;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblDataNascimento, posicionador);
 
         txfDataNascimento = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 7;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfDataNascimento, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 7;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfDataNascimento, posicionador);
 
         lblTipo = new JLabel("Tipo: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 8;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblTipo, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 8;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblTipo, posicionador);
 
         txfTipo = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 8;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfTipo, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 8;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfTipo, posicionador);
 
         lblEndereco = new JLabel("Endereço: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 9;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblEndereco, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 9;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblEndereco, posicionador);
 
         txfEndereco = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 9;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfEndereco, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 9;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfEndereco, posicionador);
 
         lblComplemento = new JLabel("Complemento: ");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 10;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblComplemento, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 10;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblComplemento, posicionador);
 
         txfComplemento = new JTextField(20);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 10;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;//ancoragem a esquerda.
-        pnlDadosCadastrais.add(txfComplemento, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 10;
+        posicionador.gridx = 1;
+        posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
+        pnlDadosCadastrais.add(txfComplemento, posicionador);
 
         lblDataCadastro = new JLabel("Data de Cadastro:");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 11;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblDataCadastro, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 11;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblDataCadastro, posicionador);
 
         txfDataCadastro = new JTextField(20);
         txfDataCadastro.setEditable(false);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 11;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(txfDataCadastro, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 11;
+        posicionador.gridx = 1;
+        pnlDadosCadastrais.add(txfDataCadastro, posicionador);
 
         lblCep = new JLabel("Cep:");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 12;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(lblCep, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 12;
+        posicionador.gridx = 0;
+        pnlDadosCadastrais.add(lblCep, posicionador);
 
         txfCep = new JTextField(20);
         txfDataCadastro.setEditable(false);
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 12;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        pnlDadosCadastrais.add(txfCep, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 12;
+        posicionador.gridx = 1;
+        pnlDadosCadastrais.add(txfCep, posicionador);
 
         tbpAbas.addTab("Dados Cadastrais", pnlDadosCadastrais);
 
@@ -345,18 +403,18 @@ public class JPanelMedicoFormulario extends JPanel {
         pnlSul.setLayout(new FlowLayout());
 
         btnGravar = new JButton("Gravar");
-        //btnGravar.addActionListener(this);
-        btnGravar.setFocusable(true);    //acessibilidade
-        btnGravar.setToolTipText("btnGravarJogador"); //acessibilidade
-        //btnGravar.setMnemonic(KeyEvent.VK_G);
+        btnGravar.addActionListener(this);
+        btnGravar.setFocusable(true);
+        btnGravar.setToolTipText("btnGravarJogador");
+        btnGravar.setMnemonic(KeyEvent.VK_G);
         btnGravar.setActionCommand("botao_gravar_formulario_jogador");
 
         pnlSul.add(btnGravar);
 
         btnCancelar = new JButton("Cancelar");
-        //btnCancelar.addActionListener(this);
-        btnCancelar.setFocusable(true);    //acessibilidade
-        btnCancelar.setToolTipText("btnCancelarJogador"); //acessibilidade
+        btnCancelar.addActionListener(this);
+        btnCancelar.setFocusable(true);
+        btnCancelar.setToolTipText("btnCancelarJogador");
         btnCancelar.setActionCommand("botao_cancelar_formulario_jogador");
 
         pnlSul.add(btnCancelar);
@@ -366,41 +424,32 @@ public class JPanelMedicoFormulario extends JPanel {
         format = new SimpleDateFormat("dd/MM/yyyy");
 
     }
-/*
+
     @Override
     public void actionPerformed(ActionEvent arg0) {
 
 
         if(arg0.getActionCommand().equals(btnGravar.getActionCommand())){
 
-            Jogador j = getJogadorbyFormulario();//recupera os dados do formulÃ¡rio
+            Medico m = getMedicobyFormulario();
 
-            if(j != null){
-
+            if(m != null){
                 try {
 
-                    pnlAJogador.getControle().getConexaoJDBC().persist(j);
+                    pnlMedico.getControle().getConexaoJDBC().persist(m);
 
-                    JOptionPane.showMessageDialog(this, "Jogador armazenado!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "O Medico foi salvo com sucesso!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
 
-                    pnlAJogador.showTela("tela_jogador_listagem");
+                    pnlMedico.showTela("tela_medicos_listagem");
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao salvar Jogador! : "+ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao salvar Médico! : "+ex.getMessage(), "Salvar", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
 
-            }else{
-
-                JOptionPane.showMessageDialog(this, "Preencha o formulário!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
-
-
         }else if(arg0.getActionCommand().equals(btnCancelar.getActionCommand())){
-
-
-            pnlAJogador.showTela("tela_jogador_listagem");
-
+            pnlMedico.showTela("tela_medicos_listagem");
         }
-    }*/
+    }
 }

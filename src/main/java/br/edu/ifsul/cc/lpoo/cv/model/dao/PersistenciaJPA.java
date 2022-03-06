@@ -51,6 +51,11 @@ public class PersistenciaJPA implements InterfacePersistencia {
     }
 
     @Override
+    public List<Medico> listMedicosFiltro(String nome) throws Exception {
+        throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
+    }
+
+    @Override
     public List<Consulta> listConsultas() throws Exception {
         throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
     }

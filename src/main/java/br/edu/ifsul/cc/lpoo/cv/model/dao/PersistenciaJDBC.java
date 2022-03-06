@@ -368,6 +368,44 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     }
 
     @Override
+    public List<Medico> listMedicosFiltro(String nome) throws Exception {
+        List<Medico> lista = null;
+
+        PreparedStatement ps = this.con.prepareStatement("SELECT p.cpf, p.rg, p.nome, p.senha, p.numero_celular,"
+                +  " p.email, p.data_cadastro, p.data_nascimento, p.cep, p.endereco, p.complemento, m.numero_crmv"
+                +  " FROM tb_pessoa p INNER JOIN tb_medico m ON p.cpf = m.cpf where p.nome ilike '%" + nome + "%'");
+
+        ResultSet rs = ps.executeQuery();
+
+        lista = new ArrayList();
+        while(rs.next()){
+            Medico m = new Medico();
+
+            m.setCpf(rs.getString("cpf"));
+            m.setRg(rs.getString("rg"));
+            m.setNome(rs.getString("nome"));
+            m.setSenha(rs.getString("senha"));
+            m.setNumero_celular(rs.getString("numero_celular"));
+            m.setEmail(rs.getString("email"));
+            m.setCep(rs.getString("cep"));
+            m.setEndereco(rs.getString("endereco"));
+            m.setComplemento(rs.getString("complemento"));
+            m.setNumero_crmv(rs.getString("numero_crmv"));
+
+            Calendar dtCadastro = Calendar.getInstance();
+            dtCadastro.setTimeInMillis(rs.getDate("data_cadastro").getTime());
+            m.setData_cadastro(dtCadastro);
+
+            Calendar dtNascimento = Calendar.getInstance();
+            dtNascimento.setTimeInMillis(rs.getDate("data_nascimento").getTime());
+            m.setData_nascimento(dtNascimento);
+
+            lista.add(m);
+        }
+        return lista;
+    }
+
+    @Override
     public List<Consulta> listConsultas() throws Exception {
         List<Consulta> lista = null;
 

@@ -20,6 +20,8 @@ public interface InterfacePersistencia {
 
     public List<Medico> listMedicos() throws Exception;
 
+    public List<Medico> listMedicosFiltro(String nome) throws Exception;
+
     public List<Consulta> listConsultas() throws Exception;
 
     public List<Receita> listReceitas() throws Exception;

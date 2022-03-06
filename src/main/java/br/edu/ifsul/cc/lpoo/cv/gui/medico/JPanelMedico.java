@@ -24,7 +24,7 @@ public class JPanelMedico extends JPanel {
         medicos_formulario = new JPanelMedicoFormulario(this, controle);
 
         this.add(medicos_listagem, "tela_medicos_listagem");
-        this.add(getFormulario(), "tela_medico_formulario");
+        this.add(getFormulario(), "tela_medicos_formulario");
     }
 
    public void showTela(String nomeTela){

@@ -1,8 +1,7 @@
 package br.edu.ifsul.cc.lpoo.cv.gui.medico;
-
-import antlr.collections.impl.Vector;
 import br.edu.ifsul.cc.lpoo.cv.Controle;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
+import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Vector;
 
 public class JPanelMedicoListagem extends JPanel implements ActionListener {
     private JPanelMedico pnlMedico;
@@ -22,6 +22,8 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
     private JLabel lblFiltro;
     private JTextField txfFiltro;
     private JButton btnFiltro;
+
+    private JButton btnLimparFiltros;
 
     private JPanel pnlCentro;
     private JScrollPane scpListagem;
@@ -35,7 +37,6 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
     private SimpleDateFormat format;
 
-
     public JPanelMedicoListagem(JPanelMedico pnlMedico, Controle controle){
 
         this.pnlMedico = pnlMedico;
@@ -44,10 +45,28 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
         initComponents();
     }
 
+    public void populaTableFiltro(String nome){
+        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();
+
+        model.setRowCount(0);
+
+        try {
+            btnLimparFiltros.setEnabled(true);
+            if (!nome.isEmpty()) {
+                List<Medico> listMedicos = controle.getConexaoJDBC().listMedicosFiltro(nome);
+                for(Medico M : listMedicos){
+                    model.addRow(new Object[]{M.getCpf(), M.getNome(), M.getNumero_crmv(), M.getEmail(), M.getNumero_celular()});
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao listar os Medicos -: "+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
+    }
 
     public void populaTable(){
 
-        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();//recuperacao do modelo da tabela
+        DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();
 
         model.setRowCount(0);
 
@@ -65,7 +84,7 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
     private void initComponents(){
 
         borderLayout = new BorderLayout();
-        this.setLayout(borderLayout);//seta o gerenciado border para este painel
+        this.setLayout(borderLayout);
 
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
@@ -77,13 +96,21 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
         pnlNorte.add(txfFiltro);
 
         btnFiltro = new JButton("Filtrar");
-        //btnFiltro.addActionListener(this);
-        btnFiltro.setFocusable(true);    //acessibilidade
-        btnFiltro.setToolTipText("btnFiltrar"); //acessibilidade
+        btnFiltro.addActionListener(this);
+        btnFiltro.setFocusable(true);
+        btnFiltro.setToolTipText("btnFiltrar");
         btnFiltro.setActionCommand("botao_filtro");
         pnlNorte.add(btnFiltro);
 
-        this.add(pnlNorte, BorderLayout.NORTH);//adiciona o painel na posicao norte.
+        btnLimparFiltros = new JButton("Limpar Filtros");
+        btnLimparFiltros.addActionListener(this);
+        btnLimparFiltros.setFocusable(true);
+        btnLimparFiltros.setToolTipText("btnLimparFiltros");
+        btnLimparFiltros.setActionCommand("botao_limpar_filtros");
+        btnLimparFiltros.setEnabled(false);
+        pnlNorte.add(btnLimparFiltros);
+
+        this.add(pnlNorte, BorderLayout.NORTH);
 
         pnlCentro = new JPanel();
         pnlCentro.setLayout(new BorderLayout());
@@ -110,7 +137,7 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
         pnlCentro.add(scpListagem, BorderLayout.CENTER);
 
 
-        this.add(pnlCentro, BorderLayout.CENTER);//adiciona o painel na posicao norte.
+        this.add(pnlCentro, BorderLayout.CENTER);
 
 
 
@@ -119,31 +146,31 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
         btnNovo = new JButton("Novo");
         btnNovo.addActionListener(this);
-        btnNovo.setFocusable(true);    //acessibilidade
-        btnNovo.setToolTipText("btnNovo"); //acessibilidade
+        btnNovo.setFocusable(true);
+        btnNovo.setToolTipText("btnNovo");
         btnNovo.setMnemonic(KeyEvent.VK_N);
         btnNovo.setActionCommand("botao_novo");
 
         pnlSul.add(btnNovo);
 
         btnAlterar = new JButton("Editar");
-        //btnAlterar.addActionListener(this);
-        btnAlterar.setFocusable(true);    //acessibilidade
-        btnAlterar.setToolTipText("btnAlterar"); //acessibilidade
+        btnAlterar.addActionListener(this);
+        btnAlterar.setFocusable(true);
+        btnAlterar.setToolTipText("btnAlterar");
         btnAlterar.setActionCommand("botao_alterar");
 
         pnlSul.add(btnAlterar);
 
         btnRemover = new JButton("Remover");
-        //btnRemover.addActionListener(this);
-        btnRemover.setFocusable(true);    //acessibilidade
-        btnRemover.setToolTipText("btnRemvoer"); //acessibilidade
+        btnRemover.addActionListener(this);
+        btnRemover.setFocusable(true);
+        btnRemover.setToolTipText("btnRemvoer");
         btnRemover.setActionCommand("botao_remover");
 
-        pnlSul.add(btnRemover);//adiciona o botao na fila organizada pelo flowlayout
+        pnlSul.add(btnRemover);
 
 
-        this.add(pnlSul, BorderLayout.SOUTH);//adiciona o painel na posicao norte.
+        this.add(pnlSul, BorderLayout.SOUTH);
 
         format = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -156,23 +183,31 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
             pnlMedico.showTela("tela_medicos_formulario");
 
-            pnlMedico.getFormulario().setMedicoFormulario(null); //limpando o formulário.
+            pnlMedico.getFormulario().setMedicoFormulario(null);
 
         }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())){
 
-/*
-            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            int indice = tblListagem.getSelectedRow();
             if(indice > -1){
 
-                DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
+                try {
+                    DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();
 
-                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
+                    Vector linha = (Vector) model.getDataVector().get(indice);
 
-                Medico m = (Medico) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
+                    String s = (String) linha.get(0);
 
-                pnlMedico.showTela("tela_medicos_formulario");
-                pnlMedico.getFormulario().setMedicoFormulario(m);
+                    Medico m = new Medico();
+                    PersistenciaJDBC persistencia = new PersistenciaJDBC();
+                    m = (Medico) persistencia.find(m.getClass(), s);
 
+                    pnlMedico.showTela("tela_medicos_formulario");
+                    pnlMedico.getFormulario().setMedicoFormulario(m);
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Houve um erro -:"+e.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
             }else{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para editar!", "Edição", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -181,28 +216,43 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
         }else if(arg0.getActionCommand().equals(btnRemover.getActionCommand())){
 
 
-            int indice = tblListagem.getSelectedRow();//recupera a linha selecionada
+            int indice = tblListagem.getSelectedRow();
             if(indice > -1){
-
-                DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel(); //recuperacao do modelo da table
-
-                Vector linha = (Vector) model.getDataVector().get(indice);//recupera o vetor de dados da linha selecionada
-
-                Medico m = (Medico) linha.get(0); //model.addRow(new Object[]{u, u.getNome(), ...
-
                 try {
+                    DefaultTableModel model =  (DefaultTableModel) tblListagem.getModel();
+
+                    Vector linha = (Vector) model.getDataVector().get(indice);
+
+                    String s = (String) linha.get(0);
+
+                    Medico m = new Medico();
+                    PersistenciaJDBC persistencia = new PersistenciaJDBC();
+                    m = (Medico) persistencia.find(m.getClass(), s);
+
                     pnlMedico.getControle().getConexaoJDBC().remover(m);
-                    JOptionPane.showMessageDialog(this, "Jogador removido!", "Jogador", JOptionPane.INFORMATION_MESSAGE);
-                    populaTable(); //refresh na tabela
+                    JOptionPane.showMessageDialog(this, "Medico removido!", "Medico", JOptionPane.INFORMATION_MESSAGE);
+                    populaTable();
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao remover Jogador -:"+ex.getLocalizedMessage(), "Jogadores", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
 
             }else{
                 JOptionPane.showMessageDialog(this, "Selecione uma linha para remover!", "Remoção", JOptionPane.INFORMATION_MESSAGE);
             }
-        */}
+        }else if(arg0.getActionCommand().equals(btnFiltro.getActionCommand())){
+            try{
+                String nome;
+                nome = txfFiltro.getText();
+                populaTableFiltro(nome);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }else if(arg0.getActionCommand().equals(btnLimparFiltros.getActionCommand())){
+            btnLimparFiltros.setEnabled(false);
+            populaTable();
+        }
     }
 }
