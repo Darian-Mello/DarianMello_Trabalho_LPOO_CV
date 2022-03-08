@@ -3,6 +3,7 @@ package br.edu.ifsul.cc.lpoo.cv;
 import br.edu.ifsul.cc.lpoo.cv.gui.JFramePrincipal;
 import br.edu.ifsul.cc.lpoo.cv.gui.JMenuBarHome;
 import br.edu.ifsul.cc.lpoo.cv.gui.JPanelHome;
+import br.edu.ifsul.cc.lpoo.cv.gui.funcionario.JPanelFuncionario;
 import br.edu.ifsul.cc.lpoo.cv.gui.medico.JPanelMedico;
 import br.edu.ifsul.cc.lpoo.cv.model.Pessoa;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
@@ -13,10 +14,11 @@ import javax.swing.*;
 public class Controle {
     private PersistenciaJDBC conexaoJDBC;
     private JFramePrincipal frame;
-    private JPanelAutenticacao pnlAutenticacao; //painel para a autenticacao do Jogador.
-    private JMenuBarHome menuBar; //menu principal
-    private JPanelHome pnlHome; // paine de boas vindas (home)
+    private JPanelAutenticacao pnlAutenticacao;
+    private JMenuBarHome menuBar;
+    private JPanelHome pnlHome;
     private JPanelMedico pnlMedico;
+    private JPanelFuncionario pnlFuncionario;
 
     public Controle() {}
 
@@ -48,14 +50,16 @@ public class Controle {
 
         pnlMedico = new JPanelMedico(this);
 
-        frame.addTela(pnlAutenticacao, "tela_autenticacao");//carta 1
-        frame.addTela(pnlHome, "tela_home");//carta 2
+        pnlFuncionario = new JPanelFuncionario(this);
+
+        frame.addTela(pnlAutenticacao, "tela_autenticacao");
+        frame.addTela(pnlHome, "tela_home");
         frame.addTela(pnlMedico, "tela_medicos_listagem");
-        //frame.addTela(pnlMedico, "tela_medico_formulario");
+        frame.addTela(pnlFuncionario, "tela_funcionarios_listagem");
 
-        frame.showTela("tela_autenticacao"); // apreseta a carta cujo nome é "tela_autenticacao"
+        frame.showTela("tela_autenticacao");
 
-        frame.setVisible(true); // torna visível o jframe
+        frame.setVisible(true);
     }
 
     public void autenticar(String email, String senha) {
@@ -66,18 +70,17 @@ public class Controle {
 
             if(p != null){
 
-                JOptionPane.showMessageDialog(pnlAutenticacao, "email " + p.getEmail() + " autenticado com sucesso!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(pnlAutenticacao, "Funcionário(a) " + p.getNome() + " autenticado(a) com sucesso!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
 
-                frame.setJMenuBar(menuBar);//adiciona o menu de barra no frame
-                frame.showTela("tela_home");//muda a tela para o painel de boas vindas (home)
+                frame.setJMenuBar(menuBar);
+                frame.showTela("tela_home");
 
             }else{
-
                 JOptionPane.showMessageDialog(pnlAutenticacao, "Dados inválidos!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }catch(Exception e){
-
+            System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(pnlAutenticacao, "Erro ao executar a autenticação no Banco de Dados!", "Autenticação", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -93,6 +96,11 @@ public class Controle {
         }else if(nomeTela.equals("tela_medicos_listagem")){
 
             pnlMedico.showTela("tela_medicos_listagem");
+            frame.showTela(nomeTela);
+
+        } else if(nomeTela.equals("tela_funcionarios_listagem")){
+
+            pnlFuncionario.showTela("tela_funcionarios_listagem");
             frame.showTela(nomeTela);
 
         }

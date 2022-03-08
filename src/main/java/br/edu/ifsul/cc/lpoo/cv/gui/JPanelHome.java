@@ -24,22 +24,22 @@ public class JPanelHome extends JPanel {
     private void initComponents(){
 
         layoutGeo = new BorderLayout();
-        this.setLayout(layoutGeo);//seta o gerenciador de layout para este painel.
+        this.setLayout(layoutGeo);
 
         lblMensagem = new JLabel("Tela de Boas Vindas!");
         lblMensagem.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(lblMensagem, BorderLayout.NORTH);
 
         lblImagem = new JLabel(new ImageIcon(JPanelHome.class.getResource("/images/logo_ifsul_color.png")));
-        this.add(lblImagem, BorderLayout.CENTER);//adiciona a imagem na parte central deste painel.
+        this.add(lblImagem, BorderLayout.CENTER);
 
-        Calendar c = Calendar.getInstance();//recupera a data atual do computador.
+        Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
         lblData = new JLabel(df.format(c.getTime()));
         lblData.setBorder(BorderFactory.createLineBorder(Color.GREEN));
         lblData.setHorizontalAlignment(SwingConstants.CENTER);
-        this.add(lblData, BorderLayout.SOUTH); //adiciona o rotulo para a data na parte inferior deste painel.
+        this.add(lblData, BorderLayout.SOUTH);
 
     }
 }

@@ -14,9 +14,9 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
     private GridBagLayout gridLayout;
     private GridBagConstraints posicionador;
 
-    private JLabel lblEmail;
+    private JLabel lblCpf;
     private JLabel lblSenha;
-    private JTextField txfEmail;
+    private JTextField txfCpf;
     private JPasswordField psfSenha;
     private JButton btnLogar;
     private Border defaultBorder;
@@ -29,98 +29,84 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
     }
 
     private void initComponents(){
-        gridLayout = new GridBagLayout();//inicializando o gerenciador de layout
-        this.setLayout(gridLayout);//definie o gerenciador para este painel.
+        gridLayout = new GridBagLayout();
+        this.setLayout(gridLayout);
 
-        lblEmail = new JLabel("Email: ");
-        lblEmail.setFocusable(true);    //acessibilidade
-        lblEmail.setToolTipText("lblEmail"); //acessibilidade
+        lblCpf = new JLabel("CPF: ");
+        lblCpf.setToolTipText("lblCpf");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 0;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        //defaultBorder = txfEmail.getBorder();
-        this.add(lblEmail, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 0;
+        posicionador.gridx = 0;
+        this.add(lblCpf, posicionador);
 
-        txfEmail = new JTextField(10);
-        txfEmail.setFocusable(true);    //acessibilidade
-        txfEmail.setToolTipText("txfEmail"); //acessibilidade
+        txfCpf = new JTextField(10);
+        txfCpf.setFocusable(true);
+        txfCpf.setToolTipText("txfCpf");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 0;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        this.add(txfEmail, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 0;
+        posicionador.gridx = 1;
+        this.add(txfCpf, posicionador);
 
-        lblSenha = new JLabel("Senha:");
-        lblSenha.setFocusable(true);    //acessibilidade
-        lblSenha.setToolTipText("lblSenha"); //acessibilidade
+        lblSenha = new JLabel("Senha: ");
+        lblSenha.setToolTipText("lblSenha");
 
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 1;//policao da linha (vertical)
-        posicionador.gridx = 0;// posição da coluna (horizontal)
-        this.add(lblSenha, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 1;
+        posicionador.gridx = 0;
+        this.add(lblSenha, posicionador);
 
         psfSenha = new JPasswordField(10);
-        psfSenha.setFocusable(true);    //acessibilidade
-        psfSenha.setToolTipText("psfSenha"); //acessibilidade
+        psfSenha.setFocusable(true);
+        psfSenha.setToolTipText("psfSenha");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 1;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        this.add(psfSenha, posicionador);//o add adiciona o rotulo no painel
+        posicionador.gridy = 1;
+        posicionador.gridx = 1;
+        this.add(psfSenha, posicionador);
 
         btnLogar = new JButton("Autenticar");
-        btnLogar.setFocusable(true);    //acessibilidade
-        btnLogar.setToolTipText("btnLogar"); //acessibilidade
+        btnLogar.setFocusable(true);
+        btnLogar.setToolTipText("btnLogar");
         posicionador = new GridBagConstraints();
-        posicionador.gridy = 2;//policao da linha (vertical)
-        posicionador.gridx = 1;// posição da coluna (horizontal)
-        btnLogar.addActionListener(this);//registrar o botão no Listener
+        posicionador.gridy = 2;
+        posicionador.gridx = 1;
+        btnLogar.addActionListener(this);
         btnLogar.setActionCommand("comando_autenticar");
-        this.add(btnLogar, posicionador);//o add adiciona o rotulo no painel
+        this.add(btnLogar, posicionador);
     }
 
     public void requestFocus(){
-
-        txfEmail.requestFocus();
+        txfCpf.requestFocus();
     }
 
     public void cleanForm(){
 
-        txfEmail.setText("");
+        txfCpf.setText("");
         psfSenha.setText("");
 
-        txfEmail.setBorder(defaultBorder);
+        txfCpf.setBorder(defaultBorder);
         psfSenha.setBorder(defaultBorder);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        //testa para verificar se o botão btnLogar foi clicado.
         if(e.getActionCommand().equals(btnLogar.getActionCommand())){
 
-            //validacao do formulario.
-            if(txfEmail.getText().trim().length() > 4){
+            if(txfCpf.getText().trim().length() == 11){
 
-                txfEmail.setBorder(new LineBorder(Color.green,1));
+                if(new String(psfSenha.getPassword()).trim().length() >= 4 ){
 
-                if(new String(psfSenha.getPassword()).trim().length() > 3 ){
-
-                    psfSenha.setBorder(new LineBorder(Color.green,1));
-
-                    controle.autenticar(txfEmail.getText().trim(), new String(psfSenha.getPassword()).trim());
+                    controle.autenticar(txfCpf.getText().trim(), new String(psfSenha.getPassword()).trim());
 
                 }else{
-
                     JOptionPane.showMessageDialog(this, "Informe Senha com 4 ou mais dígitos", "Autenticação", JOptionPane.ERROR_MESSAGE);
-                    psfSenha.setBorder(new LineBorder(Color.red,1));
-                    psfSenha.requestFocus();
 
+                    psfSenha.requestFocus();
                 }
 
             }else{
-
-                JOptionPane.showMessageDialog(this, "Informe um Email com 4 dígitos, ou mais!", "Autenticação", JOptionPane.ERROR_MESSAGE);
-                txfEmail.setBorder(new LineBorder(Color.red,1));
-                txfEmail.requestFocus();
+                JOptionPane.showMessageDialog(this, "Informe o CPF com 11 caracteres (apenas os números)!", "Autenticação", JOptionPane.ERROR_MESSAGE);
+                txfCpf.requestFocus();
             }
         }
 

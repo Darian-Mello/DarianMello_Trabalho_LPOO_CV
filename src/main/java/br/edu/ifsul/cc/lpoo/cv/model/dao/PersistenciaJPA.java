@@ -1,9 +1,6 @@
 package br.edu.ifsul.cc.lpoo.cv.model.dao;
 
-import br.edu.ifsul.cc.lpoo.cv.model.Consulta;
-import br.edu.ifsul.cc.lpoo.cv.model.Medico;
-import br.edu.ifsul.cc.lpoo.cv.model.Pessoa;
-import br.edu.ifsul.cc.lpoo.cv.model.Receita;
+import br.edu.ifsul.cc.lpoo.cv.model.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,6 +28,11 @@ public class PersistenciaJPA implements InterfacePersistencia {
     }
 
     @Override
+    public Object verificaPessoaExiste(String cpf) throws Exception {
+        throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
+    }
+
+    @Override
     public Object find(Class c, Object id) throws Exception {
         throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
     }
@@ -52,6 +54,16 @@ public class PersistenciaJPA implements InterfacePersistencia {
 
     @Override
     public List<Medico> listMedicosFiltro(String nome) throws Exception {
+        throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
+    }
+
+    @Override
+    public List<Funcionario> listFuncionarios() throws Exception {
+        throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
+    }
+
+    @Override
+    public List<Funcionario> listFuncionariosFiltro (String nome) throws Exception {
         throw new UnsupportedOperationException("Funcionalidade não disponivel no momento.");
     }
 

@@ -5,7 +5,7 @@ import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJPA;
 import org.junit.Test;
 
 public class TestPersistenciaJPA {
-    @Test
+    //@Test
     public void testConexaoGeracaoTabelas(){
 
         PersistenciaJPA persistencia = new PersistenciaJPA();
@@ -19,7 +19,7 @@ public class TestPersistenciaJPA {
 
     }
 
-    @Test
+    //@Test
     public void testGeracaoPessoaLogin() throws Exception {
 
         PersistenciaJPA persistencia = new PersistenciaJPA();
@@ -32,8 +32,6 @@ public class TestPersistenciaJPA {
                 p = new Pessoa();
                 p.setEmail("pedro@silva.com");
                 p.setSenha("1234");
-
-                //persistencia.persist(p);
                 System.out.println("Cadastrou a nova pessoa!");
             }else{
                 System.out.println("Encontrou com a pessoa cadastrada!");

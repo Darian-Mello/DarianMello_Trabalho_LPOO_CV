@@ -1,5 +1,7 @@
-package br.edu.ifsul.cc.lpoo.cv.gui.medico;
+package br.edu.ifsul.cc.lpoo.cv.gui.funcionario;
+
 import br.edu.ifsul.cc.lpoo.cv.Controle;
+import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
 import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 
@@ -13,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Vector;
 
-public class JPanelMedicoListagem extends JPanel implements ActionListener {
-    private JPanelMedico pnlMedico;
+public class JPanelFuncionarioListagem extends JPanel implements ActionListener {
+    private JPanelFuncionario pnlfuncionario;
     private Controle controle;
 
     private BorderLayout borderLayout;
@@ -37,9 +39,9 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
     private SimpleDateFormat format;
 
-    public JPanelMedicoListagem(JPanelMedico pnlMedico, Controle controle){
+    public JPanelFuncionarioListagem(JPanelFuncionario pnlfuncionario, Controle controle){
 
-        this.pnlMedico = pnlMedico;
+        this.pnlfuncionario = pnlfuncionario;
         this.controle = controle;
 
         initComponents();
@@ -53,20 +55,22 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
             btnLimparFiltros.setEnabled(true);
             if (!nome.isEmpty()) {
-                List<Medico> listMedicos = controle.getConexaoJDBC().listMedicosFiltro(nome);
-                for(Medico M : listMedicos){
+                java.util.List<Funcionario> listFuncionarios = controle.getConexaoJDBC().listFuncionariosFiltro(nome);
+                for(Funcionario f : listFuncionarios){
                     model.addRow(new Object[]{
-                            M.getCpf(),
-                            M.getRg(),
-                            M.getNome(),
-                            M.getNumero_crmv(),
-                            M.getEmail(),
-                            M.getNumero_celular(),
-                            formato.format(M.getData_nascimento().getTime()),
-                            formato.format(M.getData_cadastro().getTime()),
-                            M.getEndereco(),
-                            M.getCep(),
-                            M.getComplemento()
+                            f.getCpf(),
+                            f.getRg(),
+                            f.getNome(),
+                            f.getEmail(),
+                            f.getNumero_celular(),
+                            formato.format(f.getData_nascimento().getTime()),
+                            formato.format(f.getData_cadastro().getTime()),
+                            f.getEndereco(),
+                            f.getCep(),
+                            f.getComplemento(),
+                            f.getCargo(),
+                            f.getNumero_ctps(),
+                            f.getNumero_pis()
                     });
                 }
             }
@@ -84,24 +88,26 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
             txfFiltro.setText("");
             btnLimparFiltros.setEnabled(false);
-            List<Medico> listMedicos = controle.getConexaoJDBC().listMedicos();
-            for(Medico M : listMedicos){
+            List<Funcionario> listFuncionarios = controle.getConexaoJDBC().listFuncionarios();
+            for(Funcionario f : listFuncionarios){
                 model.addRow(new Object[]{
-                        M.getCpf(),
-                        M.getRg(),
-                        M.getNome(),
-                        M.getNumero_crmv(),
-                        M.getEmail(),
-                        M.getNumero_celular(),
-                        formato.format(M.getData_nascimento().getTime()),
-                        formato.format(M.getData_cadastro().getTime()),
-                        M.getEndereco(),
-                        M.getCep(),
-                        M.getComplemento()
+                        f.getCpf(),
+                        f.getRg(),
+                        f.getNome(),
+                        f.getEmail(),
+                        f.getNumero_celular(),
+                        formato.format(f.getData_nascimento().getTime()),
+                        formato.format(f.getData_cadastro().getTime()),
+                        f.getEndereco(),
+                        f.getCep(),
+                        f.getComplemento(),
+                        f.getCargo(),
+                        f.getNumero_ctps(),
+                        f.getNumero_pis()
                 });
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao listar os Medicos -: "+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao listar os funcionarios -: "+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
@@ -149,28 +155,27 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
                         "CPF",
                         "RG",
                         "Nome",
-                        "CRMV",
                         "Email",
                         "Numero de celular",
                         "Data de nescimento",
                         "Data de Cadastro",
                         "Endereço",
                         "Cep",
-                        "Complemento"
+                        "Complemento",
+                        "Cargo",
+                        "Número CRMV",
+                        "Número PIS"
                 }, 0){
             public boolean isCellEditable(int linha, int coluna) {
                 return false;
-        }};
+            }};
 
         tblListagem.setModel(modeloTabela);
         scpListagem.setViewportView(tblListagem);
 
         pnlCentro.add(scpListagem, BorderLayout.CENTER);
 
-
         this.add(pnlCentro, BorderLayout.CENTER);
-
-
 
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());
@@ -212,9 +217,9 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
         if(arg0.getActionCommand().equals(btnNovo.getActionCommand())){
 
-            pnlMedico.showTela("tela_medicos_formulario");
+            pnlfuncionario.showTela("tela_funcionarios_formulario");
 
-            pnlMedico.getFormulario().setMedicoFormulario(null);
+            pnlfuncionario.getFormulario().setFuncionarioFormulario(null);
 
         }else if(arg0.getActionCommand().equals(btnAlterar.getActionCommand())){
 
@@ -228,12 +233,12 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
                     String s = (String) linha.get(0);
 
-                    Medico m = new Medico();
+                    Funcionario f = new Funcionario();
                     PersistenciaJDBC persistencia = new PersistenciaJDBC();
-                    m = (Medico) persistencia.find(m.getClass(), s);
+                    f = (Funcionario) persistencia.find(f.getClass(), s);
 
-                    pnlMedico.showTela("tela_medicos_formulario");
-                    pnlMedico.getFormulario().setMedicoFormulario(m);
+                    pnlfuncionario.showTela("tela_funcionarios_formulario");
+                    pnlfuncionario.getFormulario().setFuncionarioFormulario(f);
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Houve um erro -:"+e.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
@@ -256,16 +261,16 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
 
                     String s = (String) linha.get(0);
 
-                    Medico m = new Medico();
+                    Funcionario f = new Funcionario();
                     PersistenciaJDBC persistencia = new PersistenciaJDBC();
-                    m = (Medico) persistencia.find(m.getClass(), s);
+                    f = (Funcionario) persistencia.find(f.getClass(), s);
 
-                    pnlMedico.getControle().getConexaoJDBC().remover(m);
-                    JOptionPane.showMessageDialog(this, "Medico removido!", "Medico", JOptionPane.INFORMATION_MESSAGE);
+                    pnlfuncionario.getControle().getConexaoJDBC().remover(f);
+                    JOptionPane.showMessageDialog(this, "Funcionario removido!", "Medico", JOptionPane.INFORMATION_MESSAGE);
                     populaTable();
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
 
@@ -278,7 +283,7 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
                 nome = txfFiltro.getText();
                 populaTableFiltro(nome);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Houve um erro -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }else if(arg0.getActionCommand().equals(btnLimparFiltros.getActionCommand())){
