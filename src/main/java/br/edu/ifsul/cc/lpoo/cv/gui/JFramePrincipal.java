@@ -16,33 +16,33 @@ public class JFramePrincipal extends JFrame implements WindowListener {
 
 
     private void initComponents() {
-        this.setTitle("Sistema para a Clinica Veterinaria"); //seta o título do jframe
+        this.setTitle("Sistema para a Clinica Veterinaria");
 
-        this.setMinimumSize(new Dimension(600, 600)); //tamanho minimo quando for reduzido.
+        this.setMinimumSize(new Dimension(600, 600));
 
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH); // por padrão abre maximizado.
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);// finaliza o processo quando o frame é fechado.
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.addWindowListener(this);//adiciona o listener no frame
+        this.addWindowListener(this);
 
-        cardLayout = new CardLayout();//iniciando o gerenciador de layout para esta JFrame
-        painel = new JPanel();//inicializacao
+        cardLayout = new CardLayout();
+        painel = new JPanel();
 
-        painel.setLayout(cardLayout);//definindo o cardLayout para o paineldeFundo
+        painel.setLayout(cardLayout);
 
-        this.add(painel);  //adiciona no JFrame o paineldeFundo
+        this.add(painel);
 
     }
 
     public void addTela(JPanel p, String nome) {
 
-        painel.add(p, nome); //adiciona uma "carta no baralho".
+        painel.add(p, nome);
     }
 
     public void showTela(String nome) {
 
-        cardLayout.show(painel, nome); //localiza a "carta no baralho" e mostra.
+        cardLayout.show(painel, nome);
     }
 
     @Override

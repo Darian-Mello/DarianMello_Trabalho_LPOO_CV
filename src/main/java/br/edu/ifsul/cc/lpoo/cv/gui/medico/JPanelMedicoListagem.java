@@ -114,7 +114,7 @@ public class JPanelMedicoListagem extends JPanel implements ActionListener {
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
 
-        lblFiltro = new JLabel("Filtrar por Nome:");
+        lblFiltro = new JLabel("Filtrar Médico por Nome:");
         pnlNorte.add(lblFiltro);
 
         txfFiltro = new JTextField(20);

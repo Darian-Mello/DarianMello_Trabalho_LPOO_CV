@@ -30,7 +30,7 @@ public class JPanelHome extends JPanel {
         lblMensagem.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(lblMensagem, BorderLayout.NORTH);
 
-        lblImagem = new JLabel(new ImageIcon(JPanelHome.class.getResource("/images/logo_ifsul_color.png")));
+        lblImagem = new JLabel(new ImageIcon(JPanelHome.class.getResource("/images/clinica_veterinaria.jpg")));
         this.add(lblImagem, BorderLayout.CENTER);
 
         Calendar c = Calendar.getInstance();

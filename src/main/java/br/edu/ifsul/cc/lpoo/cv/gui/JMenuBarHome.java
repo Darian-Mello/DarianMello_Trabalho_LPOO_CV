@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 public class JMenuBarHome extends JMenuBar implements ActionListener {
     private JMenu menuArquivo;
     private JMenuItem menuItemSair;
-    private JMenuItem menuItemLogout;
 
     private JMenu menuCadastro;
     private JMenuItem menuItemPessoa;

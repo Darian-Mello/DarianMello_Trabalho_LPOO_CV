@@ -3,8 +3,6 @@ package br.edu.ifsul.cc.lpoo.cv.model.dao.autenticacao;
 import br.edu.ifsul.cc.lpoo.cv.Controle;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +17,7 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
     private JTextField txfCpf;
     private JPasswordField psfSenha;
     private JButton btnLogar;
-    private Border defaultBorder;
 
-    //construtor da classe que recebe um parametro.
     public JPanelAutenticacao(Controle controle){
 
         this.controle = controle;
@@ -83,8 +79,6 @@ public class JPanelAutenticacao extends JPanel implements ActionListener {
         txfCpf.setText("");
         psfSenha.setText("");
 
-        txfCpf.setBorder(defaultBorder);
-        psfSenha.setBorder(defaultBorder);
     }
 
     @Override

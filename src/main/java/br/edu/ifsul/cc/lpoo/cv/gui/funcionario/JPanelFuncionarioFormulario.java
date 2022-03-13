@@ -90,7 +90,7 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
 
     public void populaCombocargo(){
 
-        cbxCargo.removeAllItems();//zera o combo
+        cbxCargo.removeAllItems();
 
         DefaultComboBoxModel model =  (DefaultComboBoxModel) cbxCargo.getModel();
 
@@ -134,29 +134,25 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
             txfCpf.requestFocus();
             mensagem = "Por favor, insira o CPF com os 11 caracteres (apenas os números).";
 
-        } else if (new String(txfSenha.getPassword()).trim().length() < 6) {
-            txfSenha.requestFocus();
-            mensagem = "Por favor, insira uma senha com no mínimo 8 caracteres.";
+        } else if (txfRg.getText().trim().length() != 10) {
+            txfRg.requestFocus();
+            mensagem = "Por favor, insira o RG com os 10 caracteres.";
 
         } else if (txfNome.getText().trim().length() < 4) {
             txfNome.requestFocus();
             mensagem = "Por favor, insira um nome com no mínimo 4 caracteres.";
 
-        } else if (txfRg.getText().trim().length() != 10) {
-            txfRg.requestFocus();
-            mensagem = "Por favor, insira o RG com os 10 caracteres.";
-
         } else if (txfNumeroCelular.getText().trim().length() != 11) {
             txfNumeroCelular.requestFocus();
             mensagem = "Por favor, insira o número de telefone no formato: \"55999999999\".";
 
+        } else if (new String(txfSenha.getPassword()).trim().length() < 6) {
+            txfSenha.requestFocus();
+            mensagem = "Por favor, insira uma senha com no mínimo 8 caracteres.";
+
         } else if (txfEmail.getText().trim().length() < 4) {
             txfEmail.requestFocus();
             mensagem = "Por favor, insira um email com no mínimo 4 caractertes.";
-
-        } else if (txfCep.getText().trim().length() < 4) {
-            txfCep.requestFocus();
-            mensagem = "Por favor, insira um CEP com 8 caractertes (apenas os números).";
 
         } else if (txfEndereco.getText().trim().length() < 4) {
             txfEndereco.requestFocus();
@@ -165,6 +161,10 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
         } else if (txfComplemento.getText().trim().length() < 4) {
             txfComplemento.requestFocus();
             mensagem = "Por favor, insira um Complemento com no mínimo 4 caractertes.";
+
+        } else if (txfCep.getText().trim().length() < 4) {
+            txfCep.requestFocus();
+            mensagem = "Por favor, insira um CEP com 8 caractertes (apenas os números).";
 
         }else if (txfNumeroCtps.getText().trim().length() < 4) {
             txfNumeroCtps.requestFocus();
@@ -475,7 +475,7 @@ public class JPanelFuncionarioFormulario extends JPanel implements ActionListene
         posicionador.anchor = java.awt.GridBagConstraints.LINE_START;
         pnlDadosCadastrais.add(cbxCargo, posicionador);
 
-        tbpAbas.addTab("Dados Cadastrais", pnlDadosCadastrais);
+        tbpAbas.addTab("Dados do funcionario", pnlDadosCadastrais);
 
         pnlSul = new JPanel();
         pnlSul.setLayout(new FlowLayout());

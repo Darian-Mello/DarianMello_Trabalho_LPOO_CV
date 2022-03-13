@@ -2,7 +2,6 @@ package br.edu.ifsul.cc.lpoo.cv.gui.funcionario;
 
 import br.edu.ifsul.cc.lpoo.cv.Controle;
 import br.edu.ifsul.cc.lpoo.cv.model.Funcionario;
-import br.edu.ifsul.cc.lpoo.cv.model.Medico;
 import br.edu.ifsul.cc.lpoo.cv.model.dao.PersistenciaJDBC;
 
 import javax.swing.*;
@@ -75,7 +74,7 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener 
                 }
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao listar os Medicos -: "+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao listar os Funcionarios -: "+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
@@ -107,7 +106,7 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener 
                 });
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao listar os funcionarios -: "+ex.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao listar os funcionarios -: "+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
@@ -120,7 +119,7 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener 
         pnlNorte = new JPanel();
         pnlNorte.setLayout(new FlowLayout());
 
-        lblFiltro = new JLabel("Filtrar por Nome:");
+        lblFiltro = new JLabel("Filtrar Funcionario por Nome:");
         pnlNorte.add(lblFiltro);
 
         txfFiltro = new JTextField(20);
@@ -241,7 +240,7 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener 
                     pnlfuncionario.getFormulario().setFuncionarioFormulario(f);
 
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Houve um erro -:"+e.getLocalizedMessage(), "Medicos", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Houve um erro -:"+e.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
                 }
             }else{
@@ -266,11 +265,11 @@ public class JPanelFuncionarioListagem extends JPanel implements ActionListener 
                     f = (Funcionario) persistencia.find(f.getClass(), s);
 
                     pnlfuncionario.getControle().getConexaoJDBC().remover(f);
-                    JOptionPane.showMessageDialog(this, "Funcionario removido!", "Medico", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Funcionario removido!", "Funcionario", JOptionPane.INFORMATION_MESSAGE);
                     populaTable();
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Erro ao remover o Medico -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Erro ao remover o Funcionario -:"+ex.getLocalizedMessage(), "Funcionarios", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
 

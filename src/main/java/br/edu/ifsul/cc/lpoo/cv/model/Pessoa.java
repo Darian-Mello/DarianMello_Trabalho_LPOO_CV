@@ -10,7 +10,7 @@ import java.util.Calendar;
 @DiscriminatorColumn(name = "tipo")
 @NamedQueries({
         @NamedQuery(name="Pessoa.login",
-                query="SELECT p.email from Pessoa p where p.email = :paramN and p.senha = :paramS")
+                query="SELECT p.cpf from Pessoa p where p.cpf = :paramN and p.senha = :paramS")
 })
 public class Pessoa implements Serializable {
 
